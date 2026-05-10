@@ -1,0 +1,118 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+// ── Users ────────────────────────────────────────────────────────────
+// clerkId is the source of truth for identity — no passwords stored
+model User {
+    id        String   @id @default(uuid())
+    clerkId   String   @unique
+    email     String   @unique
+    name      String?
+    fcmToken  String?  // Firebase push token
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    addictions Addiction[]
+    relapses   Relapse[]
+    checkins   Checkin[]
+    aiMessages AiMessage[]
+
+    @@index([clerkId])
+}
+
+// ── Addictions ───────────────────────────────────────────────────────
+// One user can track multiple addictions simultaneously
+model Addiction {
+    id        String          @id @default(uuid())
+    userId    String
+    type      String          // "smoking" | "porn" | "alcohol" | "social_media" | "custom"
+    goal      String          // "quit" | "reduce"
+    triggers  Json            // string[] — flexible, no join table needed
+    startDate DateTime        @default(now())
+    status    AddictionStatus @default(ACTIVE)
+    metadata  Json?           // future-proof: { customType, targetDate, notes }
+    createdAt DateTime        @default(now())
+    updatedAt DateTime        @updatedAt
+
+    user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    relapses Relapse[]
+
+    @@index([userId])
+}
+
+enum AddictionStatus {
+    ACTIVE
+    PAUSED
+    COMPLETED
+}
+
+// ── Relapses ─────────────────────────────────────────────────────────
+// Logged when user slips — AI uses this for pattern detection
+model Relapse {
+    id           String   @id @default(uuid())
+    userId       String
+    addictionId  String
+    trigger      String   // what caused it
+    mood         String   // "anxious" | "bored" | "stressed" | "sad" | "angry"
+    intensity    Int      // 1–10 urge scale
+    note         String?  // optional user reflection
+    occurredAt   DateTime @default(now())
+    context      Json?    // { location, timeOfDay, wasAlone } — optional enrichment
+
+    user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    addiction Addiction @relation(fields: [addictionId], references: [id], onDelete: Cascade)
+
+    @@index([userId, occurredAt])
+    @@index([addictionId])
+}
+
+// ── Check-ins ────────────────────────────────────────────────────────
+// Daily mood + relapse status snapshot
+model Checkin {
+    id          String   @id @default(uuid())
+    userId      String
+    mood        String   // "great" | "good" | "okay" | "bad" | "terrible"
+    moodScore   Int      // 1–5 numeric for chart rendering
+    note        String?
+    didRelapse  Boolean  @default(false)
+    streak      Int      // streak in days at time of check-in (denormalized for speed)
+    checkedAt   DateTime @default(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, checkedAt]) // one check-in per user per timestamp
+    @@index([userId, checkedAt])
+}
+
+// ── AI Messages ──────────────────────────────────────────────────────
+// Stores coach chat + urge intervention history
+model AiMessage {
+    id        String      @id @default(uuid())
+    userId    String
+    role      MessageRole // "user" | "assistant"
+    content   String
+    context   Json?       // { streak, mood, addiction, trigger } snapshot at time of message
+    type      MessageType @default(COACH)
+    createdAt DateTime    @default(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId, createdAt])
+    @@index([userId, type])
+}
+
+enum MessageRole {
+    user
+    assistant
+}
+
+enum MessageType {
+    COACH        // regular AI coach conversation
+    URGE         // "I have an urge" intervention
+    INSIGHT      // AI-generated pattern insight
+}
