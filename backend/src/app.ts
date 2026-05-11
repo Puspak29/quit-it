@@ -6,11 +6,11 @@ import { AppError } from './utils/errors';
 import { env } from './config/env';
 
 // Routes (to be created in Step 4)
-// import userRoutes from './routes/user.routes';
-// import addictionRoutes from './routes/addiction.routes';
-// import relapseRoutes from './routes/relapse.routes';
-// import checkinRoutes from './routes/checkin.routes';
-// import aiRoutes from './routes/ai.routes';
+import userRoutes from './modules/user/user.routes';
+import addictionRoutes from './modules/addiction/addiction.routes';
+import relapseRoutes from './modules/relapse/relapse.routes';
+import checkinRoutes from './modules/checkin/checkin.routes';
+import aiRoutes from './modules/ai/ai.routes';
 
 const app = express();
 
@@ -24,11 +24,11 @@ app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
 // Routes
-// app.use('/api/users', userRoutes);
-// app.use('/api/addictions', addictionRoutes);
-// app.use('/api/relapses', relapseRoutes);
-// app.use('/api/checkins', checkinRoutes);
-// app.use('/api/ai', aiRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/addictions', addictionRoutes);
+app.use('/api/relapses', relapseRoutes);
+app.use('/api/checkins', checkinRoutes);
+app.use('/api/ai', aiRoutes);
 
 // 404 Handler 
 app.use((_req, res) => {

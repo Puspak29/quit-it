@@ -13,7 +13,7 @@ export const requireAuth = async (req: AuthRequest, _res: Response, next: NextFu
         if (!token) throw new UnauthorizedError();
 
         const payload = await verifyToken(token, {
-        secretKey: env.CLERK_SECRET_KEY,
+            secretKey: env.CLERK_SECRET_KEY,
         });
 
         req.userId = payload.sub;
