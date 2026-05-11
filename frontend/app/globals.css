@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme {
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-gray-800);
+  }
+
+  body {
+    @apply antialiased;
+  }
+
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-gray-900);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-gray-700);
+    border-radius: 9999px;
+  }
+}
+
+@utility glass {
+  @apply bg-gray-900/60 backdrop-blur-sm border border-gray-800;
+}
