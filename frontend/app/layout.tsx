@@ -19,6 +19,8 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
       appearance={{
         theme: dark
       }}
