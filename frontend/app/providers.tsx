@@ -14,7 +14,7 @@ export function Providers({
 
   useEffect(() => {
     setupApi(getToken);
-  }, [getToken]);
+  }, []);
 
   return <>{children}</>;
 }
