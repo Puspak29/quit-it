@@ -7,6 +7,17 @@ export const api = axios.create({
 
 let initialized = false;
 
+// Unwrap backend envelope: { success, message, data: T } → T
+api.interceptors.response.use(
+  (response) => {
+    if (response.data && response.data.data !== undefined) {
+      response.data = response.data.data;
+    }
+    return response;
+  },
+  (error) => Promise.reject(error)
+);
+
 export const setupApi = (
   getToken?: () => Promise<string | null>
 ) => {

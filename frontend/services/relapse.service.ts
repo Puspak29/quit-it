@@ -1,3 +1,4 @@
+import { Patterns } from "@/app/(dashboard)/insights/page";
 import { request } from "@/lib/request";
 
 export const relapseService = {
@@ -20,7 +21,7 @@ export const relapseService = {
     ),
 
   patterns: () =>
-    request.get(
+    request.get<{ patterns: Patterns }>(
       "/api/relapses/patterns"
     ),
 };

@@ -1,5 +1,9 @@
-export const cn = (...classes: (string | undefined | false | null)[]): string =>
-  classes.filter(Boolean).join(' ');
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export const formatStreak = (days: number): string => {
   if (days === 0) return 'Start today';

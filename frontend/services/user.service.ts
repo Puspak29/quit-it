@@ -2,8 +2,7 @@ import { request } from "@/lib/request";
 import { Dashboard, User, Addiction } from "@/types";
 
 interface Me {
-    user: User;
-    addictions: Addiction[];
+    user: User & { addictions: Addiction[] };
 }
 
 export const userService = {
@@ -20,7 +19,7 @@ export const userService = {
     request.get<Me>("/api/users/me"),
 
   dashboard: () =>
-    request.get<Dashboard | null>(
+    request.get<{ dashboard: Dashboard | null }>(
       "/api/users/dashboard"
     ),
 

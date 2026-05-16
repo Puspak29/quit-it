@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { getMoodEmoji } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import { motion, Variants } from 'framer-motion';
+import { CheckCircle2, AlertTriangle, PenLine, CalendarCheck } from 'lucide-react';
 
 const MOODS = [
   { value: 'great', score: 5 },
@@ -13,6 +15,19 @@ const MOODS = [
   { value: 'bad', score: 2 },
   { value: 'terrible', score: 1 },
 ];
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4 } }
+};
 
 export default function CheckinPage() {
   const { todayCheckin, loading, submitCheckin } = useCheckin();
@@ -33,106 +48,159 @@ export default function CheckinPage() {
       await submitCheckin({ mood, moodScore, note, didRelapse });
       router.push('/');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to submit');
+      setError(err instanceof Error ? err.message : 'Failed to submit check-in. Please try again.');
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (loading) return null;
+  if (loading) return (
+    <div className="flex items-center justify-center h-[60vh]">
+      <div className="w-10 h-10 border-4 border-violet-500/20 border-t-violet-500 rounded-full animate-spin" />
+    </div>
+  );
 
   if (todayCheckin) {
     return (
-      <div className="max-w-lg mx-auto text-center py-16 space-y-4">
-        <div className="text-5xl">{getMoodEmoji(todayCheckin.mood)}</div>
-        <h2 className="text-xl font-bold text-white">Already checked in today</h2>
-        <p className="text-gray-500">
-          You logged <span className="text-white">{todayCheckin.mood}</span> today.
-          Come back tomorrow.
-        </p>
-        <Button variant="secondary" onClick={() => router.push('/')}>
-          Back to dashboard
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="max-w-lg mx-auto text-center py-16 space-y-6"
+      >
+        <div className="relative inline-block">
+          <div className="absolute inset-0 bg-emerald-500/20 blur-2xl rounded-full" />
+          <CheckCircle2 className="w-24 h-24 text-emerald-400 relative z-10 mx-auto" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold text-white tracking-tight">You're all set!</h2>
+          <p className="text-zinc-400">
+            You logged <span className="text-white font-medium capitalize">{todayCheckin.mood}</span> today. 
+            Consistency is key. Come back tomorrow!
+          </p>
+        </div>
+        <Button variant="secondary" onClick={() => router.push('/')} className="mt-8">
+          Back to Dashboard
         </Button>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="max-w-lg mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-white">Daily check-in</h1>
-        <p className="text-gray-500 text-sm mt-1">Takes 30 seconds. Builds streaks.</p>
-      </div>
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="max-w-xl mx-auto space-y-6 pb-20"
+    >
+      <motion.div variants={itemVariants} className="text-center md:text-left">
+        <h1 className="text-3xl font-bold text-white tracking-tight flex items-center justify-center md:justify-start gap-2">
+          <CalendarCheck className="text-violet-500" />
+          Daily Check-in
+        </h1>
+        <p className="text-zinc-400 text-sm mt-2">Takes 30 seconds. Builds lifelong habits.</p>
+      </motion.div>
 
       {/* Mood selection */}
-      <Card>
-        <p className="text-sm text-gray-400 mb-3">How are you feeling today?</p>
-        <div className="flex justify-between">
-          {MOODS.map((m) => (
-            <button
-              key={m.value}
-              onClick={() => setMood(m.value)}
-              className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all ${
-                mood === m.value
-                  ? 'bg-violet-900/40 border border-violet-500/40'
-                  : 'hover:bg-gray-800'
-              }`}
-            >
-              <span className="text-2xl">{getMoodEmoji(m.value)}</span>
-              <span className="text-xs text-gray-400 capitalize">{m.value}</span>
-            </button>
-          ))}
-        </div>
-      </Card>
-
-      {/* Relapse toggle */}
-      <Card>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-white">Did you relapse today?</p>
-            <p className="text-xs text-gray-500 mt-0.5">
-              Honesty helps — no judgment here
-            </p>
+      <motion.div variants={itemVariants}>
+        <Card className="border-white/5">
+          <p className="text-sm font-medium text-zinc-300 mb-4 tracking-wide">How are you feeling today?</p>
+          <div className="grid grid-cols-5 gap-2">
+            {MOODS.map((m) => {
+              const isSelected = mood === m.value;
+              return (
+                <button
+                  key={m.value}
+                  onClick={() => setMood(m.value)}
+                  className={`relative flex flex-col items-center gap-2 p-3 sm:p-4 rounded-xl transition-all duration-300 ${
+                    isSelected
+                      ? 'bg-violet-600/20 border border-violet-500/50 shadow-[0_0_20px_rgba(139,92,246,0.15)]'
+                      : 'bg-zinc-900/50 border border-white/5 hover:bg-zinc-800 hover:border-white/10'
+                  }`}
+                >
+                  {isSelected && (
+                    <motion.div 
+                      layoutId="mood-active"
+                      className="absolute inset-0 bg-violet-500/10 rounded-xl"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                  <span className="text-3xl sm:text-4xl relative z-10 transition-transform duration-300 group-hover:scale-110">
+                    {getMoodEmoji(m.value)}
+                  </span>
+                  <span className={`text-xs font-medium relative z-10 capitalize ${isSelected ? 'text-violet-300' : 'text-zinc-500'}`}>
+                    {m.value}
+                  </span>
+                </button>
+              );
+            })}
           </div>
-          <button
-            onClick={() => setDidRelapse((p) => !p)}
-            className={`relative w-12 h-6 rounded-full transition-colors ${
-              didRelapse ? 'bg-red-500' : 'bg-gray-700'
-            }`}
-          >
-            <span
-              className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                didRelapse ? 'translate-x-7' : 'translate-x-1'
-              }`}
-            />
-          </button>
-        </div>
-      </Card>
+        </Card>
+      </motion.div>
 
       {/* Note */}
-      <Card>
-        <p className="text-sm text-gray-400 mb-2">Add a note (optional)</p>
-        <textarea
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          placeholder="How did today go? What helped?"
-          rows={3}
-          className="w-full bg-transparent text-gray-200 text-sm resize-none
-            placeholder-gray-600 outline-none"
-        />
-      </Card>
+      <motion.div variants={itemVariants}>
+        <Card className="border-white/5 group focus-within:border-violet-500/50 focus-within:ring-1 focus-within:ring-violet-500/50 transition-all">
+          <p className="text-sm font-medium text-zinc-300 mb-3 tracking-wide flex items-center gap-2">
+            <PenLine size={16} className="text-zinc-500" />
+            Add a note <span className="text-zinc-600 font-normal">(optional)</span>
+          </p>
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="What triggered your mood? What helped you stay strong?"
+            rows={3}
+            className="w-full bg-transparent text-zinc-200 text-sm resize-none placeholder-zinc-600 outline-none"
+          />
+        </Card>
+      </motion.div>
 
-      {error && <p className="text-red-400 text-sm">{error}</p>}
+      {/* Relapse toggle */}
+      <motion.div variants={itemVariants}>
+        <Card className={`border transition-colors duration-300 ${didRelapse ? 'border-red-500/30 bg-red-500/5' : 'border-white/5'}`}>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-medium flex items-center gap-2 text-white">
+                <AlertTriangle size={16} className={didRelapse ? 'text-red-500' : 'text-zinc-500'} />
+                Did you relapse today?
+              </p>
+              <p className="text-xs text-zinc-500 mt-1">
+                Honesty helps the AI coach understand your journey — no judgment here.
+              </p>
+            </div>
+            <button
+              onClick={() => setDidRelapse((p) => !p)}
+              className={`relative w-14 h-8 rounded-full transition-colors duration-300 shrink-0 ${
+                didRelapse ? 'bg-red-500 shadow-lg shadow-red-500/20' : 'bg-zinc-700'
+              }`}
+            >
+              <span
+                className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform duration-300 ${
+                  didRelapse ? 'translate-x-6' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
+        </Card>
+      </motion.div>
 
-      <Button
-        className="w-full"
-        size="lg"
-        disabled={!mood}
-        loading={submitting}
-        onClick={handleSubmit}
-      >
-        Submit check-in
-      </Button>
-    </div>
+      {error && (
+        <motion.div variants={itemVariants} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          <p className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 p-3 rounded-xl">
+            {error}
+          </p>
+        </motion.div>
+      )}
+
+      <motion.div variants={itemVariants}>
+        <Button
+          className="w-full h-14 text-lg font-semibold shadow-xl shadow-violet-500/20"
+          disabled={!mood}
+          loading={submitting}
+          onClick={handleSubmit}
+        >
+          {submitting ? 'Saving Check-in...' : 'Complete Check-in'}
+        </Button>
+      </motion.div>
+    </motion.div>
   );
 }

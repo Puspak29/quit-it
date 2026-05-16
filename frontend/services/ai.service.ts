@@ -1,8 +1,9 @@
 import { request } from "@/lib/request";
+import { AiMessage } from "@/types";
 
 export const aiService = {
   chat: (message: string) =>
-    request.post(
+    request.post<{ reply: string }>( 
       "/api/ai/chat",
       { message }
     ),
@@ -18,10 +19,10 @@ export const aiService = {
     ),
 
   insight: () =>
-    request.get("/api/ai/insight"),
+    request.get<{ insight: string }>("/api/ai/insight"),
 
   history: () =>
-    request.get(
+    request.get<{ messages: AiMessage[] }>(
       "/api/ai/history",
       { type: "COACH" }
     ),

@@ -1,22 +1,30 @@
 import { cn } from '@/lib/utils';
+import { motion, HTMLMotionProps } from 'framer-motion';
 
-interface CardProps {
+interface CardProps extends HTMLMotionProps<"div"> {
   children: React.ReactNode;
   className?: string;
   onClick?: () => void;
+  hoverEffect?: boolean;
 }
 
-export const Card = ({ children, className, onClick }: CardProps) => (
-  <div
+export const Card = ({ children, className, onClick, hoverEffect = true, ...props }: CardProps) => (
+  <motion.div
     onClick={onClick}
+    whileHover={onClick && hoverEffect ? { y: -2 } : {}}
     className={cn(
-      'glass rounded-xl p-5',
-      onClick && 'cursor-pointer hover:border-gray-700 transition-colors',
+      'glass rounded-2xl p-5 relative overflow-hidden group',
+      onClick && 'cursor-pointer hover:border-white/10 transition-all duration-300',
       className
     )}
+    {...props}
   >
-    {children}
-  </div>
+    {/* Subtle gradient overlay on hover */}
+    {onClick && hoverEffect && (
+      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+    )}
+    <div className="relative z-10">{children}</div>
+  </motion.div>
 );
 
 export const CardTitle = ({
@@ -26,7 +34,7 @@ export const CardTitle = ({
   children: React.ReactNode;
   className?: string;
 }) => (
-  <h3 className={cn('text-sm font-medium text-gray-400 mb-1', className)}>
+  <h3 className={cn('text-sm font-medium text-zinc-400 mb-1 tracking-wide', className)}>
     {children}
   </h3>
 );
@@ -38,5 +46,5 @@ export const CardValue = ({
   children: React.ReactNode;
   className?: string;
 }) => (
-  <p className={cn('text-2xl font-bold text-white', className)}>{children}</p>
+  <p className={cn('text-2xl font-semibold text-zinc-50 tracking-tight', className)}>{children}</p>
 );

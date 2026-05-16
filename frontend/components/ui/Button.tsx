@@ -1,9 +1,12 @@
 import { cn } from '@/lib/utils';
+import { motion, HTMLMotionProps } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
+interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'glass';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
+  children?: React.ReactNode;
 }
 
 export const Button = ({
@@ -15,36 +18,36 @@ export const Button = ({
   disabled,
   ...props
 }: ButtonProps) => {
-  const base = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
+  const base = 'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:ring-offset-2 focus:ring-offset-zinc-950';
 
   const variants = {
-    primary: 'bg-violet-600 hover:bg-violet-500 text-white',
-    secondary: 'bg-gray-800 hover:bg-gray-700 text-gray-100 border border-gray-700',
-    danger: 'bg-red-600 hover:bg-red-500 text-white',
-    ghost: 'hover:bg-gray-800 text-gray-400 hover:text-gray-100',
+    primary: 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-lg shadow-violet-500/25 border border-white/10',
+    secondary: 'bg-zinc-800/80 hover:bg-zinc-700 text-zinc-100 border border-zinc-700/50 shadow-sm backdrop-blur-sm',
+    danger: 'bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white shadow-lg shadow-red-500/25 border border-white/10',
+    ghost: 'hover:bg-zinc-800/60 text-zinc-400 hover:text-zinc-100',
+    glass: 'glass hover:bg-zinc-800/50 text-white border border-white/10 hover:border-white/20',
   };
 
   const sizes = {
     sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-sm',
+    md: 'px-4 py-2.5 text-sm',
     lg: 'px-6 py-3 text-base',
   };
 
   return (
-    <button
+    <motion.button
+      whileHover={{ scale: disabled || loading ? 1 : 1.02 }}
+      whileTap={{ scale: disabled || loading ? 1 : 0.98 }}
       className={cn(base, variants[variant], sizes[size], className)}
       disabled={disabled || loading}
       {...props}
     >
       {loading ? (
         <span className="flex items-center gap-2">
-          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
-          </svg>
+          <Loader2 className="animate-spin h-4 w-4" />
           {children}
         </span>
       ) : children}
-    </button>
+    </motion.button>
   );
 };

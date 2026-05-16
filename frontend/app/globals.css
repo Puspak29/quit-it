@@ -1,33 +1,59 @@
 @import "tailwindcss";
 
 @theme {
-  --radius: 0.5rem;
+  --radius: 0.75rem;
+  --color-background: #09090b;
+  --color-foreground: #fafafa;
+  --color-primary-500: #8b5cf6;
+  --color-primary-600: #7c3aed;
+  --color-glass-bg: rgba(24, 24, 27, 0.4);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+  
+  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-float: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
 }
 
 @layer base {
   * {
-    border-color: var(--color-gray-800);
+    border-color: var(--color-glass-border);
   }
 
   body {
-    @apply antialiased;
+    @apply antialiased bg-background text-foreground selection:bg-violet-500/30;
   }
 
-
   ::-webkit-scrollbar {
-    width: 4px;
+    width: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: var(--color-gray-900);
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--color-gray-700);
+    background: #27272a;
     border-radius: 9999px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3f3f46;
   }
 }
 
 @utility glass {
-  @apply bg-gray-900/60 backdrop-blur-sm border border-gray-800;
+  @apply bg-zinc-900/40 backdrop-blur-md border border-white/5 shadow-xl shadow-black/40;
+}
+
+@utility glass-panel {
+  @apply bg-zinc-900/60 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/50;
+}
+
+@utility text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-fuchsia-400;
 }
