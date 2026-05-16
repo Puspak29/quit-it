@@ -1,3 +1,4 @@
+import { HTTP_STATUS } from '../config/constants';
 import { env } from '../config/env';
 import { AppError } from '../utils/errors';
 
@@ -29,14 +30,14 @@ export const huggingfaceService = {
         });
 
         if (!response.ok) {
-            throw new AppError('HuggingFace API error', 502);
+            throw new AppError('HuggingFace API error', HTTP_STATUS.BAD_GATEWAY);
         }
 
         const data = (await response.json()) as HFResponse | HFResponse[];
         const result = Array.isArray(data) ? data[0] : data;
 
-        if (result.error) throw new AppError(`HuggingFace: ${result.error}`, 502);
-        if (!result.generated_text) throw new AppError('HuggingFace returned empty response', 502);
+        if (result.error) throw new AppError(`HuggingFace: ${result.error}`, HTTP_STATUS.BAD_GATEWAY);
+        if (!result.generated_text) throw new AppError('HuggingFace returned empty response', HTTP_STATUS.BAD_GATEWAY);
 
         return result.generated_text.trim();
     },

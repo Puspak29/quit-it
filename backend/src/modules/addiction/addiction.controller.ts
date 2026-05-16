@@ -3,6 +3,8 @@ import { prisma } from '../../config/db';
 import { cache } from '../../utils/cache';
 import { AuthRequest } from '../../middlewares/auth.middleware';
 import { NotFoundError, ValidationError } from '../../utils/errors';
+import { sendSuccess } from '../../utils/responseHelper';
+import { HTTP_STATUS } from '../../config/constants';
 
 export const addictionController = {
     async create(req: AuthRequest, res: Response): Promise<void> {
@@ -22,10 +24,14 @@ export const addictionController = {
                 metadata,
         },
         });
-
-        await cache.delPattern(`dashboard:${req.userId}*`);
-        await cache.del(`user:${req.userId}`);
-        res.status(201).json({ addiction });
+        try{
+            await cache.delPattern(`dashboard:${req.userId}*`);
+            await cache.del(`user:${req.userId}`);
+        }
+        catch(err){
+            console.error('Error clearing cache:', err);
+        }
+        sendSuccess(res, HTTP_STATUS.CREATED, "Addiction created", { addiction });
     },
 
     async getAll(req: AuthRequest, res: Response): Promise<void> {
@@ -39,7 +45,7 @@ export const addictionController = {
             orderBy: { createdAt: 'desc' },
         });
 
-        res.json({ addictions });
+        sendSuccess(res, HTTP_STATUS.OK, "Addictions retrieved", { addictions });
     },
 
     async updateStatus(req: AuthRequest, res: Response): Promise<void> {
@@ -65,7 +71,13 @@ export const addictionController = {
             data: { status },
         });
 
-        await cache.delPattern(`dashboard:${req.userId}*`);
-        res.json({ addiction: updated });
+        try{
+            await cache.delPattern(`dashboard:${req.userId}*`);
+        }
+        catch(err){
+            console.error('Error clearing cache:', err);
+        }
+        
+        sendSuccess(res, HTTP_STATUS.OK, "Addiction status updated", { addiction: updated });
     },
 };

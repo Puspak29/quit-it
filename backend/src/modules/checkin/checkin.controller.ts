@@ -4,6 +4,8 @@ import { cache } from '../../utils/cache';
 import { streakService } from '../../services/streak.service';
 import { AuthRequest } from '../../middlewares/auth.middleware';
 import { NotFoundError, ValidationError } from '../../utils/errors';
+import { HTTP_STATUS } from '../../config/constants';
+import { sendSuccess } from '../../utils/responseHelper';
 
 export const checkinController = {
   async create(req: AuthRequest, res: Response): Promise<void> {
@@ -52,8 +54,13 @@ export const checkinController = {
       },
     });
 
-    await cache.delPattern(`dashboard:${req.userId}*`);
-    res.status(201).json({ checkin });
+    try{
+        await cache.delPattern(`dashboard:${req.userId}*`);
+    }
+    catch(err){
+        console.error('Error clearing cache:', err);
+    }
+    sendSuccess(res, HTTP_STATUS.CREATED, "Check-in created", { checkin });
   },
 
   async getToday(req: AuthRequest, res: Response): Promise<void> {
@@ -69,7 +76,7 @@ export const checkinController = {
       where: { userId: user.id, checkedAt: { gte: todayStart } },
     });
 
-    res.json({ checkin }); // null if not checked in yet
+    sendSuccess(res, HTTP_STATUS.OK, "Today's check-in retrieved", { checkin }); // null if not checked in yet
   },
 
   async getHistory(req: AuthRequest, res: Response): Promise<void> {
@@ -90,6 +97,6 @@ export const checkinController = {
       prisma.checkin.count({ where: { userId: user.id } }),
     ]);
 
-    res.json({ checkins, total, page: Number(page), limit: Number(limit) });
+    sendSuccess(res, HTTP_STATUS.OK, "History retrieved", { checkins, total, page: Number(page), limit: Number(limit) });
   },
 };

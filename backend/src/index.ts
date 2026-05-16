@@ -4,7 +4,12 @@ import { prisma } from './config/db';
 import { connectRedis } from './config/redis';
 
 const startServer = async (): Promise<void> => {
-    await connectRedis();
+    try{
+        await connectRedis();
+    }
+    catch(err){
+        console.error('[Redis] Connection failed:', err);
+    }
     await prisma.$connect();
     console.log("[DB] Prisma connected");
 

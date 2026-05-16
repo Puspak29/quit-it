@@ -4,6 +4,8 @@ import { cache } from '../../utils/cache';
 import { streakService } from '../../services/streak.service';
 import { AuthRequest } from '../../middlewares/auth.middleware';
 import { NotFoundError } from '../../utils/errors';
+import { sendSuccess } from '../../utils/responseHelper';
+import { HTTP_STATUS } from '../../config/constants';
 
 export const userController = {
   // Upsert user after Clerk sign-up/sign-in
@@ -16,15 +18,26 @@ export const userController = {
             update: { email, name },
             create: { clerkId, email, name },
         });
+        try{
+            await cache.del(`user:${clerkId}`);
+        }
+        catch(error){
+            console.error("Error deleting user from cache:", error);
+        }
 
-        await cache.del(`user:${clerkId}`);
-        res.json({ user });
+        sendSuccess(res, HTTP_STATUS.OK, "User synced", { user });
     },
 
     async getMe(req: AuthRequest, res: Response): Promise<void> {
         const cacheKey = `user:${req.userId}`;
-        const cached = await cache.get(cacheKey);
-        if (cached) { res.json(cached); return; }
+        let cached = null;
+        try{
+            cached = await cache.get(cacheKey);
+        }
+        catch(error){
+            console.error("Error fetching user from cache:", error);
+        }
+        if (cached) { sendSuccess(res, HTTP_STATUS.OK, "User retrieved", { user: cached }); return; }
 
         const user = await prisma.user.findUnique({
             where: { clerkId: req.userId! },
@@ -33,8 +46,13 @@ export const userController = {
 
         if (!user) throw new NotFoundError('User');
 
-        await cache.set(cacheKey, user, 60);
-        res.json(user);
+        try{
+            await cache.set(cacheKey, user, 60);
+        }
+        catch(error){
+            console.error("Error setting user in cache:", error);
+        }
+        sendSuccess(res, HTTP_STATUS.OK, "User retrieved", { user });
     },
 
     async updateFcmToken(req: AuthRequest, res: Response): Promise<void> {
@@ -45,13 +63,19 @@ export const userController = {
             data: { fcmToken },
         });
 
-        res.json({ success: true });
+        sendSuccess(res, HTTP_STATUS.OK, "FCM token updated", { success: true });
     },
 
     async getDashboard(req: AuthRequest, res: Response): Promise<void> {
         const cacheKey = `dashboard:${req.userId}`;
-        const cached = await cache.get(cacheKey);
-        if (cached) { res.json(cached); return; }
+        let cached = null;
+        try{
+            cached = await cache.get(cacheKey);
+        }
+        catch(error){
+            console.error("Error fetching dashboard from cache:", error);
+        }
+        if (cached) { sendSuccess(res, HTTP_STATUS.OK, "Dashboard retrieved", { dashboard: cached }); return; }
 
         const user = await prisma.user.findUnique({
             where: { clerkId: req.userId! },
@@ -89,7 +113,12 @@ export const userController = {
             relapseCount,
         };
 
-        await cache.set(cacheKey, dashboard, 120); // 2 min cache
-        res.json(dashboard);
+        try{
+            await cache.set(cacheKey, dashboard, 120); // 2 min cache
+        }
+        catch(error){
+            console.error("Error setting dashboard in cache:", error);
+        }
+        sendSuccess(res, HTTP_STATUS.OK, "Dashboard retrieved", { dashboard });
     },
 };

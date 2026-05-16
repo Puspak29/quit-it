@@ -5,6 +5,7 @@ import { promptBuilder } from '../utils/prompt.builder';
 import { prisma } from '../config/db';
 import { UserContext } from '../types';
 import { AppError } from '../utils/errors';
+import { HTTP_STATUS } from '../config/constants';
 
 // How long to cache AI responses (urge responses should not be cached)
 const CACHE_TTL = {
@@ -24,7 +25,7 @@ export const aiService = {
             },
         });
 
-        if (!user) throw new AppError('User not found', 404);
+        if (!user) throw new AppError('User not found', HTTP_STATUS.NOT_FOUND);
 
         const addiction = user.addictions[0];
         const lastCheckin = user.checkins[0];
@@ -54,7 +55,13 @@ export const aiService = {
     // Core generate function — Gemini first, HuggingFace fallback
     async generate(prompt: string, cacheKey?: string, ttl = 300): Promise<string> {
         if (cacheKey) {
-            const cached = await cache.get<string>(cacheKey);
+            let cached = null;
+            try{
+                cached = await cache.get<string>(cacheKey);
+            }
+            catch(err){
+                console.error('Error accessing cache:', err);
+            }
             if (cached) return cached;
         }
 
@@ -74,7 +81,12 @@ export const aiService = {
     }
 
         if (cacheKey && ttl > 0) {
-            await cache.set(cacheKey, response, ttl);
+            try{
+                await cache.set(cacheKey, response, ttl);
+            }
+            catch(err){
+                console.error('Error setting cache:', err);
+            }
         }
 
         return response;

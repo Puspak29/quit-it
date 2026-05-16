@@ -3,6 +3,8 @@ import { AuthRequest } from '../../middlewares/auth.middleware';
 import { aiService } from '../../services/ai.service';
 import { prisma } from '../../config/db';
 import { NotFoundError, ValidationError } from '../../utils/errors';
+import { sendSuccess } from '../../utils/responseHelper';
+import { HTTP_STATUS } from '../../config/constants';
 
 export const aiController = {
     async chat(req: AuthRequest, res: Response): Promise<void> {
@@ -33,7 +35,7 @@ export const aiController = {
         // Save assistant reply
         await aiService.saveMessage(user.id, 'assistant', reply, 'COACH');
 
-        res.json({ reply });
+        sendSuccess(res, HTTP_STATUS.OK, "Message processed", { reply });
     },
 
     async urge(req: AuthRequest, res: Response): Promise<void> {
@@ -59,7 +61,7 @@ export const aiController = {
             intensity,
         });
 
-        res.json({ reply });
+        sendSuccess(res, HTTP_STATUS.OK, "Urge processed", { reply });
     },
 
     async insight(req: AuthRequest, res: Response): Promise<void> {
@@ -72,7 +74,7 @@ export const aiController = {
 
         await aiService.saveMessage(user.id, 'assistant', insight, 'INSIGHT');
 
-        res.json({ insight });
+        sendSuccess(res, HTTP_STATUS.OK, "Insight generated", { insight });
     },
 
     async getHistory(req: AuthRequest, res: Response): Promise<void> {
@@ -89,6 +91,6 @@ export const aiController = {
             take: Number(limit),
         });
 
-        res.json({ messages });
+        sendSuccess(res, HTTP_STATUS.OK, "History retrieved", { messages });
     },
 };

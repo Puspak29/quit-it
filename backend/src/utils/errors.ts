@@ -1,3 +1,5 @@
+import { HTTP_STATUS } from "../config/constants";
+
 export class AppError extends Error {
     constructor( public message: string, public statusCode: number = 500, public isOperational: boolean = true ){
         super(message);
@@ -7,24 +9,24 @@ export class AppError extends Error {
 
 export class NotFoundError extends AppError {
     constructor(resource = 'Resource') {
-        super(`${resource} not found`, 404);
+        super(`${resource} not found`, HTTP_STATUS.NOT_FOUND);
     }
 }
 
 export class UnauthorizedError extends AppError {
     constructor() {
-        super('Unauthorized', 401);
+        super('Unauthorized', HTTP_STATUS.UNAUTHORIZED);
     }
 }
 
 export class RateLimitError extends AppError {
     constructor() {
-        super('Too many requests. Please slow down.', 429);
+        super('Too many requests. Please slow down.', HTTP_STATUS.TOO_MANY_REQUESTS);
     }
 }
 
 export class ValidationError extends AppError {
     constructor(message: string) {
-        super(message, 400);
+        super(message, HTTP_STATUS.BAD_REQUEST);
     }
 }

@@ -3,6 +3,8 @@ import { prisma } from '../../config/db';
 import { cache } from '../../utils/cache';
 import { AuthRequest } from '../../middlewares/auth.middleware';
 import { NotFoundError, ValidationError } from '../../utils/errors';
+import { sendSuccess } from '../../utils/responseHelper';
+import { HTTP_STATUS } from '../../config/constants';
 
 export const relapseController = {
   async log(req: AuthRequest, res: Response): Promise<void> {
@@ -35,8 +37,13 @@ export const relapseController = {
     });
 
     // Bust dashboard cache so streak resets immediately
-    await cache.delPattern(`dashboard:${req.userId}*`);
-    res.status(201).json({ relapse });
+    try{
+        await cache.delPattern(`dashboard:${req.userId}*`);
+    }
+    catch(err){
+        console.error('Error clearing cache:', err);
+    }
+    sendSuccess(res, HTTP_STATUS.CREATED, "Relapse logged", { relapse });
   },
 
   async getAll(req: AuthRequest, res: Response): Promise<void> {
@@ -58,14 +65,20 @@ export const relapseController = {
       prisma.relapse.count({ where: { userId: user.id } }),
     ]);
 
-    res.json({ relapses, total, page: Number(page), limit: Number(limit) });
+    sendSuccess(res, HTTP_STATUS.OK, "Relapses retrieved", { relapses, total, page: Number(page), limit: Number(limit) });
   },
 
   // Lightweight pattern data for the AI — no AI call here
   async getPatterns(req: AuthRequest, res: Response): Promise<void> {
     const cacheKey = `patterns:${req.userId}`;
-    const cached = await cache.get(cacheKey);
-    if (cached) { res.json(cached); return; }
+    let cached = null;
+    try{
+      cached = await cache.get(cacheKey);
+    }
+    catch(err){
+      console.error('Error accessing cache:', err);
+    }
+    if (cached) { sendSuccess(res, HTTP_STATUS.OK, "Patterns retrieved", { patterns: cached }); return; }
 
     const user = await prisma.user.findUnique({
       where: { clerkId: req.userId! },
@@ -99,7 +112,13 @@ export const relapseController = {
       recentRelapses: relapses.slice(0, 5),
     };
 
-    await cache.set(cacheKey, patterns, 300); // 5 min cache
-    res.json(patterns);
+    try{
+      await cache.set(cacheKey, patterns, 300); // 5 min cache
+    }
+    catch(err){
+      console.error('Error setting cache:', err);
+    }
+    
+    sendSuccess(res, HTTP_STATUS.OK, "Patterns retrieved", { patterns });
   },
 };

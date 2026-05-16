@@ -1,3 +1,4 @@
+import { HTTP_STATUS } from '../config/constants';
 import { env } from '../config/env';
 import { AppError } from '../utils/errors';
 
@@ -38,7 +39,7 @@ export const geminiService = {
 
     if (!response.ok) {
       const err = await response.text();
-      throw new AppError(`Gemini API error: ${err}`, 502);
+      throw new AppError(`Gemini API error: ${err}`, HTTP_STATUS.BAD_GATEWAY);
     }
 
     const data = (await response.json()) as GeminiResponse;
@@ -46,7 +47,7 @@ export const geminiService = {
       ?.map((part) => part.text || '')
       .join('');
 
-    if (!text) throw new AppError('Gemini returned empty response', 502);
+    if (!text) throw new AppError('Gemini returned empty response', HTTP_STATUS.BAD_GATEWAY);
 
     return text.trim();
   },
