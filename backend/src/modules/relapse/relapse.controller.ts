@@ -15,7 +15,7 @@ export const relapseController = {
     }
 
     const user = await prisma.user.findUnique({
-      where: { clerkId: req.userId! },
+      where: { id: req.userId! },
     });
     if (!user) throw new NotFoundError('User');
 
@@ -50,7 +50,7 @@ export const relapseController = {
     const { page = 1, limit = 10 } = req.query;
 
     const user = await prisma.user.findUnique({
-      where: { clerkId: req.userId! },
+      where: { id: req.userId! },
     });
     if (!user) throw new NotFoundError('User');
 
@@ -81,7 +81,7 @@ export const relapseController = {
     if (cached) { sendSuccess(res, HTTP_STATUS.OK, "Patterns retrieved", { patterns: cached }); return; }
 
     const user = await prisma.user.findUnique({
-      where: { clerkId: req.userId! },
+      where: { id: req.userId! },
     });
     if (!user) throw new NotFoundError('User');
 

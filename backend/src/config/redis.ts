@@ -9,9 +9,9 @@ export const redis = new Redis({
 export const connectRedis = async () => {
     try {
         await redis.ping();
-        console.log("Redis connected successfully.");
+        console.log("[Cache] Redis connected successfully.");
     }
     catch (error) {
-        console.log("Error connecting to Redis:", error);
+        console.log("[Cache] Error connecting to Redis:", error);
     }
 }

@@ -16,7 +16,7 @@ export const checkinController = {
     }
 
     const user = await prisma.user.findUnique({
-      where: { clerkId: req.userId! },
+      where: { id: req.userId! },
       include: { addictions: { where: { status: 'ACTIVE' }, take: 1 } },
     });
     if (!user) throw new NotFoundError('User');
@@ -65,7 +65,7 @@ export const checkinController = {
 
   async getToday(req: AuthRequest, res: Response): Promise<void> {
     const user = await prisma.user.findUnique({
-      where: { clerkId: req.userId! },
+      where: { id: req.userId! },
     });
     if (!user) throw new NotFoundError('User');
 
@@ -83,7 +83,7 @@ export const checkinController = {
     const { page = 1, limit = 14 } = req.query;
 
     const user = await prisma.user.findUnique({
-      where: { clerkId: req.userId! },
+      where: { id: req.userId! },
     });
     if (!user) throw new NotFoundError('User');
 

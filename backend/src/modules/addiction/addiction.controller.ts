@@ -11,7 +11,7 @@ export const addictionController = {
         const { type, goal, triggers = [], metadata = {} } = req.body;
 
         const user = await prisma.user.findUnique({
-            where: { clerkId: req.userId! },
+            where: { id: req.userId! },
         });
         if (!user) throw new NotFoundError('User');
 
@@ -22,7 +22,7 @@ export const addictionController = {
                 goal,
                 triggers,  // stored as JSON array
                 metadata,
-        },
+            },
         });
         try{
             await cache.delPattern(`dashboard:${req.userId}*`);
@@ -36,7 +36,7 @@ export const addictionController = {
 
     async getAll(req: AuthRequest, res: Response): Promise<void> {
         const user = await prisma.user.findUnique({
-            where: { clerkId: req.userId! },
+            where: { id: req.userId! },
         });
         if (!user) throw new NotFoundError('User');
 
@@ -57,7 +57,7 @@ export const addictionController = {
         }
 
         const user = await prisma.user.findUnique({
-            where: { clerkId: req.userId! },
+            where: { id: req.userId! },
         });
         if (!user) throw new NotFoundError('User');
 

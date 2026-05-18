@@ -13,9 +13,9 @@ export const env = {
     DATABASE_URL: required('DATABASE_URL'),
     FRONTEND_URL: required('FRONTEND_URL'),
 
-    // Clerk
-    CLERK_PUBLISHABLE_KEY: required('CLERK_PUBLISHABLE_KEY'),
-    CLERK_SECRET_KEY: required('CLERK_SECRET_KEY'),
+    // JWT Auth
+    JWT_SECRET: required('JWT_SECRET'),
+    JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
 
     // Redis
     REDIS_URL: required('UPSTASH_REDIS_REST_URL'),

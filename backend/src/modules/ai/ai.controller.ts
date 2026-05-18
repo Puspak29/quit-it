@@ -12,7 +12,7 @@ export const aiController = {
         if (!message?.trim()) throw new ValidationError('Message cannot be empty');
 
         const user = await prisma.user.findUnique({
-            where: { clerkId: req.userId! },
+            where: { id: req.userId! },
         });
         if (!user) throw new NotFoundError('User');
 
@@ -49,7 +49,7 @@ export const aiController = {
         }
 
         const user = await prisma.user.findUnique({
-            where: { clerkId: req.userId! },
+            where: { id: req.userId! },
         });
         if (!user) throw new NotFoundError('User');
 
@@ -66,7 +66,7 @@ export const aiController = {
 
     async insight(req: AuthRequest, res: Response): Promise<void> {
         const user = await prisma.user.findUnique({
-            where: { clerkId: req.userId! },
+            where: { id: req.userId! },
         });
         if (!user) throw new NotFoundError('User');
 
@@ -81,7 +81,7 @@ export const aiController = {
         const { type = 'COACH', limit = 20 } = req.query;
 
         const user = await prisma.user.findUnique({
-            where: { clerkId: req.userId! },
+            where: { id: req.userId! },
         });
         if (!user) throw new NotFoundError('User');
 

@@ -6,7 +6,7 @@ const router = Router();
 
 router.use(requireAuth);
 
-router.post('/sync', userController.syncUser);       // called after Clerk sign-up
+// router.post('/sync', userController.syncUser);       // called after Clerk sign-up
 router.get('/me', userController.getMe);
 router.patch('/fcm-token', userController.updateFcmToken);
 router.get('/dashboard', userController.getDashboard);

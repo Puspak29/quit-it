@@ -8,25 +8,7 @@ import { sendSuccess } from '../../utils/responseHelper';
 import { HTTP_STATUS } from '../../config/constants';
 
 export const userController = {
-  // Upsert user after Clerk sign-up/sign-in
-    async syncUser(req: AuthRequest, res: Response): Promise<void> {
-        const { email, name } = req.body;
-        const clerkId = req.userId!;
 
-        const user = await prisma.user.upsert({
-            where: { clerkId },
-            update: { email, name },
-            create: { clerkId, email, name },
-        });
-        try{
-            await cache.del(`user:${clerkId}`);
-        }
-        catch(error){
-            console.error("Error deleting user from cache:", error);
-        }
-
-        sendSuccess(res, HTTP_STATUS.OK, "User synced", { user });
-    },
 
     async getMe(req: AuthRequest, res: Response): Promise<void> {
         const cacheKey = `user:${req.userId}`;
@@ -40,7 +22,7 @@ export const userController = {
         if (cached) { sendSuccess(res, HTTP_STATUS.OK, "User retrieved", { user: cached }); return; }
 
         const user = await prisma.user.findUnique({
-            where: { clerkId: req.userId! },
+            where: { id: req.userId! },
             include: { addictions: { where: { status: 'ACTIVE' } } },
         });
 
@@ -59,7 +41,7 @@ export const userController = {
         const { fcmToken } = req.body;
 
         await prisma.user.update({
-            where: { clerkId: req.userId! },
+            where: { id: req.userId! },
             data: { fcmToken },
         });
 
@@ -78,7 +60,7 @@ export const userController = {
         if (cached) { sendSuccess(res, HTTP_STATUS.OK, "Dashboard retrieved", { dashboard: cached }); return; }
 
         const user = await prisma.user.findUnique({
-            where: { clerkId: req.userId! },
+            where: { id: req.userId! },
             include: { addictions: { where: { status: 'ACTIVE' } } },
         });
 

@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 import { AppError } from './utils/errors';
 import { env } from './config/env';
 import { sendError, sendSuccess } from './utils/responseHelper';
@@ -12,19 +13,22 @@ import addictionRoutes from './modules/addiction/addiction.routes';
 import relapseRoutes from './modules/relapse/relapse.routes';
 import checkinRoutes from './modules/checkin/checkin.routes';
 import aiRoutes from './modules/ai/ai.routes';
+import { authRoutes } from './modules/auth/auth.routes';
 
 const app = express();
 
 // Security & Parsing
 app.use(helmet());
-app.use(cors({ origin: env.FRONTEND_URL }));
+app.use(cors({ origin: env.FRONTEND_URL, credentials: true }));
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 // Health check 
 app.get('/health', (_req, res) => sendSuccess(res, 200, "OK"));
 
 // Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/addictions', addictionRoutes);
 app.use('/api/relapses', relapseRoutes);
