@@ -3,7 +3,7 @@ import { AiMessage } from "@/types";
 
 export const aiService = {
   chat: (message: string) =>
-    request.post<{ reply: string }>( 
+    request.post<{ data: { reply: string } }>(
       "/api/ai/chat",
       { message }
     ),
@@ -13,16 +13,16 @@ export const aiService = {
     mood: string;
     intensity: number;
   }) =>
-    request.post<{ reply: string }>(
+    request.post<{ data: { reply: string } }>(
       "/api/ai/urge",
       data
     ),
 
   insight: () =>
-    request.get<{ insight: string }>("/api/ai/insight"),
+    request.get<{ data: { insight: string } }>("/api/ai/insight"),
 
   history: () =>
-    request.get<{ messages: AiMessage[] }>(
+    request.get<{ data: { messages: AiMessage[] } }>(
       "/api/ai/history",
       { type: "COACH" }
     ),

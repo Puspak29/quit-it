@@ -23,7 +23,7 @@ export const useCoach = () => {
     const loadHistory = async () => {
       try {
         const res = await aiService.history();
-        const history: AiMessage[] = res.data.messages;
+        const history: AiMessage[] = res.data?.data?.messages;
         setMessages(
           history.map((m) => ({
             id: m.id,
@@ -66,7 +66,7 @@ export const useCoach = () => {
 
     try {
       const res = await aiService.chat(text.trim());
-      const reply: string = res.data.reply;
+      const reply: string = res.data?.data?.reply;
 
       // Replace loading bubble with real response
       setMessages((prev) =>

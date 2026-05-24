@@ -1,10 +1,10 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { useUser } from '@clerk/nextjs';
+import { useEffect } from 'react';
+import { useAuth } from '@/context/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
 import { userService } from '@/services/user.service';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, CheckSquare, MessageSquare, BarChart3, Loader2 } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, MessageSquare, BarChart3, Loader2, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 // import { useNotification } from '@/hooks/useNotification';
 
@@ -20,45 +20,37 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isLoaded, isSignedIn } = useUser();
+  const { user, loading, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const [synced, setSynced] = useState(false);
 
   // Register FCM token
   // useNotification();
 
   useEffect(() => {
-    if (!isLoaded) return;
-    if (!isSignedIn) {
+
+    if (loading) return;
+    if (!user) {
       router.push('/sign-in');
       return;
     }
 
-    const sync = async () => {
+    const checkOnboarding = async () => {
       try {
-        await userService.sync({
-          email: user.primaryEmailAddress?.emailAddress ?? '',
-          name: user.fullName ?? '',
-        });
-        setSynced(true);
-
-        // New user — redirect to onboarding
         const me = await userService.me();
-        const hasAddiction = (me.data?.user?.addictions?.length ?? 0) > 0;
+        const hasAddiction = (me.data?.data?.user?.addictions?.length ?? 0) > 0;
         if (!hasAddiction && pathname !== '/onboarding') {
           router.push('/onboarding');
         }
       } catch (err) {
-        console.error('[Sync] Failed:', err);
-        setSynced(true); // don't block the app on sync failure
+        console.error('[Onboarding Check] Failed:', err);
       }
     };
 
-    sync();
-  }, [isLoaded, isSignedIn, user, pathname, router]);
+    checkOnboarding();
+  }, [loading, user, pathname, router]);
 
-  if (!isLoaded || !synced) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4 animate-pulse">
@@ -107,20 +99,19 @@ export default function DashboardLayout({
             })}
           </div>
 
-          <div className="mt-auto hidden md:block pt-8 border-t border-white/5">
-            <div className="flex items-center gap-3 px-2">
+          <div className="mt-auto hidden md:flex pt-8 border-t border-white/5 items-center justify-between px-2">
+            <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center overflow-hidden">
-                {user?.imageUrl ? (
-                   <img src={user.imageUrl} alt="Profile" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-xs text-zinc-400">{user?.firstName?.charAt(0)}</span>
-                )}
+                <span className="text-xs text-zinc-400">{user?.name?.charAt(0) || user?.email?.charAt(0) || 'U'}</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-medium text-zinc-200">{user?.firstName || 'User'}</span>
-                <span className="text-xs text-zinc-500 truncate w-32">{user?.primaryEmailAddress?.emailAddress}</span>
+                <span className="text-sm font-medium text-zinc-200">{user?.name || 'User'}</span>
+                <span className="text-xs text-zinc-500 truncate w-32">{user?.email}</span>
               </div>
             </div>
+            <button onClick={logout} className="text-zinc-400 hover:text-red-400 transition-colors p-2" title="Log out">
+                <LogOut size={16} />
+            </button>
           </div>
         </div>
       </nav>

@@ -21,7 +21,7 @@ export const Card = ({ children, className, onClick, hoverEffect = true, ...prop
   >
     {/* Subtle gradient overlay on hover */}
     {onClick && hoverEffect && (
-      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-br from-white/2 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
     )}
     <div className="relative z-10">{children}</div>
   </motion.div>

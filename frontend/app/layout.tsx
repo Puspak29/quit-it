@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/ui/themes";
+
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -18,13 +17,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider
-      signInUrl="/sign-in"
-      signUpUrl="/sign-up"
-      appearance={{
-        theme: dark
-      }}
-    >
     <html lang="en">
       <body className={`${inter.className} bg-gray-950 text-gray-100 min-h-screen`}>
         <Providers>
@@ -32,6 +24,5 @@ export default function RootLayout({
         </Providers>
       </body>
     </html>
-    </ClerkProvider>
   );
 }

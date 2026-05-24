@@ -16,10 +16,10 @@ export const userService = {
     ),
 
   me: () =>
-    request.get<Me>("/api/users/me"),
+    request.get<{ success: boolean, data: Me, message?: string }>("/api/users/me"),
 
   dashboard: () =>
-    request.get<{ dashboard: Dashboard | null }>(
+    request.get<{ success: boolean, data: { dashboard: Dashboard | null }, message?: string }>(
       "/api/users/dashboard"
     ),
 

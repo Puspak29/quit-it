@@ -10,7 +10,7 @@ export const useCheckin = () => {
   const fetchToday = useCallback(async () => {
     try {
       const res = await checkinService.today();
-      setTodayCheckin(res.data?.checkin);
+      setTodayCheckin(res.data?.data?.checkin);
     } catch {
       setTodayCheckin(null);
     } finally {
@@ -29,8 +29,8 @@ export const useCheckin = () => {
     didRelapse?: boolean;
   }) => {
     const res = await checkinService.create(data);
-    setTodayCheckin(res.data?.checkin);
-    return res.data?.checkin;
+    setTodayCheckin(res.data?.data?.checkin);
+    return res.data?.data?.checkin;
   };
 
   return { todayCheckin, loading, submitCheckin, refetch: fetchToday };

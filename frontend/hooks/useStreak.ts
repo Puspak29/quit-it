@@ -12,7 +12,7 @@ export const useStreak = () => {
     try {
       setLoading(true);
       const res = await userService.dashboard();
-      setDashboard(res.data?.dashboard ?? null);
+      setDashboard(res.data?.data?.dashboard ?? null);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load dashboard');

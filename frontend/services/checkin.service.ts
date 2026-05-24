@@ -11,9 +11,9 @@ export const checkinService = {
     moodScore: number;
     note?: string;
     didRelapse?: boolean;
-  }) => request.post<CheckinResponse>('/api/checkins', data),
+  }) => request.post<{ data: CheckinResponse }>('/api/checkins', data),
 
-  today: () => request.get<CheckinResponse>('/api/checkins/today'),
+  today: () => request.get<{ data: CheckinResponse }>('/api/checkins/today'),
 
-  history: (page = 1) => request.get('/api/checkins/history', { page }),
+  history: (page = 1) => request.get<{ data: { checkins: Checkin[] } }>('/api/checkins/history', { page }),
 };
