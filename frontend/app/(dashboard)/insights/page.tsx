@@ -58,7 +58,7 @@ export default function InsightsPage() {
         const fetchPatterns = async () => {
             try {
                 const res = await relapseService.patterns();
-                setPatterns(res.data?.patterns ?? null);
+                setPatterns(res?.data?.data?.patterns ?? null);
             } catch {
                 setError('Failed to load patterns');
             } finally {
@@ -73,7 +73,7 @@ export default function InsightsPage() {
         setError('');
         try {
             const res = await aiService.insight();
-            setInsight(res.data.insight);
+            setInsight(res.data?.data?.insight);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to generate insight');
         } finally {

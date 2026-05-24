@@ -9,7 +9,7 @@ export const relapseService = {
     intensity: number;
     note?: string;
   }) =>
-    request.post(
+    request.post<{ success: boolean, data: any, message?: string }>(
       "/api/relapses",
       data
     ),
@@ -21,7 +21,7 @@ export const relapseService = {
     ),
 
   patterns: () =>
-    request.get<{ patterns: Patterns }>(
+    request.get<{ success: boolean, data: any, message?: string }>(
       "/api/relapses/patterns"
     ),
 };

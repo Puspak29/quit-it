@@ -7,11 +7,11 @@ export const addictionService = {
     triggers?: string[];
     metadata?: Record<string, unknown>;
   }) =>
-    request.post(
+    request.post<{ data: any, success: boolean, message?: string }>(
       "/api/addictions",
       data
     ),
 
   list: () =>
-    request.get("/api/addictions"),
+    request.get<{ data: any, success: boolean, message?: string }>("/api/addictions"),
 };
