@@ -2,6 +2,7 @@ import { Response, NextFunction } from 'express';
 import { redis } from '../config/redis';
 import { RateLimitError } from '../utils/errors';
 import { AuthRequest } from './auth.middleware';
+import { asyncHandler } from '../utils/asyncHandler';
 
 interface RateLimitOptions {
   windowSeconds: number;
@@ -9,7 +10,7 @@ interface RateLimitOptions {
   keyPrefix: string;
 }
 
-export const rateLimitByUser = ({ windowSeconds, maxRequests, keyPrefix }: RateLimitOptions) => async (req: AuthRequest, _res: Response, next: NextFunction): Promise<void> => {
+export const rateLimitByUser = ({ windowSeconds, maxRequests, keyPrefix }: RateLimitOptions) => asyncHandler(async (req: AuthRequest, _res: Response, next: NextFunction): Promise<void> => {
     const key = `${keyPrefix}:${req.userId}`;
     const current = await redis.incr(key);
 
@@ -22,4 +23,4 @@ export const rateLimitByUser = ({ windowSeconds, maxRequests, keyPrefix }: RateL
     }
 
     next();
-};
+});
