@@ -37,9 +37,9 @@ export const UrgeButton = ({ onResponse }: { onResponse?: (msg: string) => void 
     setError('');
     try {
       const res = await aiService.urge({ trigger: trigger.toLowerCase(), mood: mood.toLowerCase(), intensity });
-      setResponse(res.data.reply);
+      setResponse(res.data.data.reply);
       setStep('response');
-      onResponse?.(res.data.reply);
+      onResponse?.(res.data.data.reply);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Too many requests. Wait 30 seconds.');
     } finally {
