@@ -8,8 +8,6 @@ import { sendSuccess } from '../../utils/responseHelper';
 import { HTTP_STATUS } from '../../config/constants';
 
 export const userController = {
-
-
     async getMe(req: AuthRequest, res: Response): Promise<void> {
         const cacheKey = `user:${req.userId}`;
         let cached = null;
@@ -34,7 +32,10 @@ export const userController = {
         catch(error){
             console.error("Error setting user in cache:", error);
         }
-        sendSuccess(res, HTTP_STATUS.OK, "User retrieved", { user });
+
+        const { password: _, ...userWithoutPassword } = user;
+
+        sendSuccess(res, HTTP_STATUS.OK, "User retrieved", { user: userWithoutPassword });
     },
 
     async updateFcmToken(req: AuthRequest, res: Response): Promise<void> {

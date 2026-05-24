@@ -19,7 +19,7 @@ export const sendSuccess = <T>(res: Response, statusCode: number, message: strin
         message 
     };
 
-    if (data !== null) payload.data = data;
+    if (data !== undefined) payload.data = data;
 
     return res.status(statusCode).json(payload);
 };
@@ -30,7 +30,7 @@ export const sendError = <E>(res: Response, statusCode: number, message: string,
         message 
     };
 
-    if (errors !== null) payload.errors = errors;
+    if (errors !== undefined) payload.errors = errors;
     
     return res.status(statusCode).json(payload);
 };
