@@ -20,7 +20,7 @@ export default function SignUpPage() {
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
-    const { login } = useAuth();
+    const { refreshUser } = useAuth();
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -31,11 +31,15 @@ export default function SignUpPage() {
 
         setLoading(true);
         try {
+            toast.loading('Creating account...');
             const response = await authService.register({ email, password });
-            console.log("Register response:", response);
+            // console.log("Register response:", response);
             if (response.data.success) {
                 toast.success('Account created successfully!');
-                login(response.data.data.token, response.data.data.user);
+                
+                await refreshUser(); // Refresh user data in context
+                toast.dismiss(); // Dismiss loading toast
+
                 router.push('/');
             } else {
                 toast.error(response.data.message || 'Failed to sign up');

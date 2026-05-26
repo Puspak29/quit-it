@@ -37,8 +37,7 @@ export default function DashboardLayout({
 
     const checkOnboarding = async () => {
       try {
-        const me = await userService.me();
-        const hasAddiction = (me.data?.data?.user?.addictions?.length ?? 0) > 0;
+        const hasAddiction = (user?.addictions?.length ?? 0) > 0;
         if (!hasAddiction && pathname !== '/onboarding') {
           router.push('/onboarding');
         }

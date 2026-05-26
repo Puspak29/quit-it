@@ -22,11 +22,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const response = await userService.me();
       if (response?.data?.success) {
-        setUser({
-          email: response?.data?.data?.user?.email,
-          id: response?.data?.data?.user?.id,
-          name: response?.data?.data?.user?.name
-        });
+        setUser(response.data.data.user);
       } else {
         setUser(null);
       }

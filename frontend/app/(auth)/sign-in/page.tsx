@@ -17,15 +17,21 @@ export default function SignInPage() {
     const [loading, setLoading] = useState(false);
 
     const router = useRouter();
-    const { login } = useAuth();
+    const { refreshUser } = useAuth();
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         try {
+            toast.loading('Signing in...');
+
             const response = await authService.login({ email, password });
             if (response.data.success) {
+                
+                await refreshUser(); // Refresh user data in context
+                toast.dismiss(); // Dismiss loading toast
+                
                 toast.success('Successfully signed in!');
-                login(response.data.data.token, response.data.data.user);
+
                 router.push('/');
             } else {
                 toast.error(response.data.message || 'Failed to sign in');

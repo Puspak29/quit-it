@@ -2,6 +2,10 @@ export interface User {
   id: string;
   email: string;
   name: string | null;
+  fcmToken?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  addictions?: Addiction[];
 }
 
 export interface Addiction {
