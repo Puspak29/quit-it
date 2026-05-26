@@ -17,6 +17,9 @@ import { authRoutes } from './modules/auth/auth.routes';
 
 const app = express();
 
+// Cache control headers
+app.disable('etag');
+
 // Security & Parsing
 app.use(helmet());
 app.set('trust proxy', 1);

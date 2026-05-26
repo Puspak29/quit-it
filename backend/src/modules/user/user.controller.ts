@@ -9,6 +9,8 @@ import { HTTP_STATUS } from '../../config/constants';
 
 export const userController = {
     async getMe(req: AuthRequest, res: Response): Promise<void> {
+        res.setHeader('Cache-Control', 'no-store'); // Ensure sensitive data is not cached
+
         const cacheKey = `user:${req.userId}`;
         let cached = null;
         try{
@@ -26,14 +28,15 @@ export const userController = {
 
         if (!user) throw new NotFoundError('User');
 
+        const { password: _, ...userWithoutPassword } = user;
+
         try{
-            await cache.set(cacheKey, user, 60);
+            await cache.set(cacheKey, userWithoutPassword, 60);
         }
         catch(error){
             console.error("Error setting user in cache:", error);
         }
 
-        const { password: _, ...userWithoutPassword } = user;
 
         sendSuccess(res, HTTP_STATUS.OK, "User retrieved", { user: userWithoutPassword });
     },
@@ -50,6 +53,8 @@ export const userController = {
     },
 
     async getDashboard(req: AuthRequest, res: Response): Promise<void> {
+        res.setHeader('Cache-Control', 'no-store'); // Ensure sensitive data is not cached
+
         const cacheKey = `dashboard:${req.userId}`;
         let cached = null;
         try{
