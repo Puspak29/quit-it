@@ -2,7 +2,6 @@
 import { useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
-import { userService } from '@/services/user.service';
 import { motion } from 'framer-motion';
 import { LayoutDashboard, CheckSquare, MessageSquare, BarChart3, Loader2, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';

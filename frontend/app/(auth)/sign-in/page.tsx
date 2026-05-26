@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { request as api } from '@/lib/request';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
@@ -29,7 +28,7 @@ export default function SignInPage() {
                 
                 await refreshUser(); // Refresh user data in context
                 toast.dismiss(); // Dismiss loading toast
-                
+
                 toast.success('Successfully signed in!');
 
                 router.push('/');
@@ -116,7 +115,7 @@ export default function SignInPage() {
                         </Button>
                     </form>
                     <p className="text-center text-sm text-zinc-400 mt-8">
-                        Don't have an account?{' '}
+                        Don't have an account?{" "}
                         <Link href="/sign-up" className="font-semibold text-white hover:text-violet-300 transition-colors">
                             Sign up
                         </Link>

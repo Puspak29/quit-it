@@ -3,10 +3,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/Button';
-import { request as api } from '@/lib/request';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, Activity, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { authService } from '@/services/auth.service';
 
@@ -165,7 +164,7 @@ export default function SignUpPage() {
                         </Button>
                     </form>
                     <p className="text-center text-sm text-zinc-400 mt-8">
-                        Already have an account?{' '}
+                        Already have an account?{" "}
                         <Link href="/sign-in" className="font-semibold text-white hover:text-violet-300 transition-colors">
                             Sign in
                         </Link>

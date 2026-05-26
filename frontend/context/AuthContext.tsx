@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { request as api } from '../lib/request';
 import { User } from '../types';
 import { userService } from '../services/user.service';
 import { authService } from '../services/auth.service';
@@ -7,7 +6,6 @@ import { authService } from '../services/auth.service';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (token: string, userData: User) => void;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -34,14 +32,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    refreshUser();
-  }, []);
+    const init = () => {
+      refreshUser();
+    }
 
-  const login = (token: string, userData: User) => {
-    // Note: token is set in httpOnly cookie by backend, so we don't need to store it manually in localStorage.
-    // If we wanted to keep token in state or localStorage for some reason, we'd do it here.
-    setUser(userData);
-  };
+    init();
+  }, []);
 
   const logout = async () => {
     try {
@@ -56,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
