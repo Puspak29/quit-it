@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '../types';
 import { userService } from '../services/user.service';
 import { authService } from '../services/auth.service';
+import Cookies from 'js-cookie';
 
 interface AuthContextType {
   user: User | null;
@@ -42,6 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     try {
       await authService.logout();
+      Cookies.remove('token');
     } catch (error) {
       console.error('Logout error', error);
     } finally {
