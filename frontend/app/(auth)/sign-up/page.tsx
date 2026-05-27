@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { authService } from '@/services/auth.service';
+import Cookies from 'js-cookie';
 
 export default function SignUpPage() {
     // const [name, setName] = useState('');
@@ -36,6 +37,12 @@ export default function SignUpPage() {
             if (response.data.success) {
                 toast.success('Account created successfully!');
                 
+                Cookies.set('token', response.data.data.token, { 
+                    expires: 7,
+                    secure: true,
+                    sameSite: 'strict',
+                });
+
                 await refreshUser(); // Refresh user data in context
                 toast.dismiss(); // Dismiss loading toast
 

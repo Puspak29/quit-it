@@ -8,6 +8,7 @@ import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/Button';
 import { authService } from '@/services/auth.service';
+import Cookies from 'js-cookie';
 
 export default function SignInPage() {
     const [email, setEmail] = useState('');
@@ -26,6 +27,12 @@ export default function SignInPage() {
             const response = await authService.login({ email, password });
             if (response.data.success) {
                 
+                Cookies.set('token', response.data.data.token, { 
+                    expires: 7,
+                    secure: true,
+                    sameSite: 'strict',
+                });
+
                 await refreshUser(); // Refresh user data in context
                 toast.dismiss(); // Dismiss loading toast
 
