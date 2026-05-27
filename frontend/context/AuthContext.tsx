@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     try {
       await authService.logout();
-      Cookies.remove('token');
+      Cookies.remove('frontend-token');
     } catch (error) {
       console.error('Logout error', error);
     } finally {

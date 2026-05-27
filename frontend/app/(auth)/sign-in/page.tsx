@@ -27,10 +27,8 @@ export default function SignInPage() {
             const response = await authService.login({ email, password });
             if (response.data.success) {
                 
-                Cookies.set('token', response.data.data.token, { 
-                    expires: 7,
-                    secure: true,
-                    sameSite: 'strict',
+                Cookies.set('frontend-token', response.data.data.token, { 
+                    expires: 7
                 });
 
                 await refreshUser(); // Refresh user data in context

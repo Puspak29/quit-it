@@ -37,10 +37,8 @@ export default function SignUpPage() {
             if (response.data.success) {
                 toast.success('Account created successfully!');
                 
-                Cookies.set('token', response.data.data.token, { 
-                    expires: 7,
-                    secure: true,
-                    sameSite: 'strict',
+                Cookies.set('frontend-token', response.data.data.token, { 
+                    expires: 7
                 });
 
                 await refreshUser(); // Refresh user data in context
