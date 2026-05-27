@@ -83,7 +83,7 @@ export const authController = {
                 httpOnly: true,
                 expires: new Date(0),
                 secure: env.NODE_ENV === 'production',
-                sameSite: 'strict',
+                sameSite: env.NODE_ENV === 'production' ? 'none' : 'lax',
             });
             sendSuccess(res, HTTP_STATUS.OK, 'Logout successful');
         } catch (error) {
