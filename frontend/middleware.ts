@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 
 const publicRoutes = ['/sign-in', '/sign-up', '/health'];
 
