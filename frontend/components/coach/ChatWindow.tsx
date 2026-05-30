@@ -75,7 +75,7 @@ export const ChatWindow = ({
   const showQuickPrompts = messages.length === 0 && !historyLoading;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-12rem)] glass rounded-2xl overflow-hidden">
+    <div className="flex flex-col h-[60vh] md:h-[calc(100vh-12rem)] glass rounded-2xl overflow-hidden">
 
       {/* Header */}
       <div className="px-5 py-4 border-b border-gray-800 flex items-center gap-3">
@@ -138,12 +138,13 @@ export const ChatWindow = ({
 
       {/* Quick prompts — only shown on empty chat */}
       {showQuickPrompts && (
-        <div className="px-4 pb-2 flex gap-2 flex-wrap">
+        <div className="px-4 pb-2 flex gap-2 overflow-x-auto flex-nowrap md:flex-wrap"
+          style={{ scrollbarWidth: 'none' }}>
           {QUICK_PROMPTS.map((p) => (
             <button
               key={p}
               onClick={() => onSend(p)}
-              className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-400
+              className="shrink-0 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-400
                 hover:text-gray-200 rounded-full text-xs transition-colors"
             >
               {p}
@@ -178,7 +179,7 @@ export const ChatWindow = ({
             Send
           </Button>
         </div>
-        <p className="text-xs text-gray-700 mt-1.5 text-center">
+        <p className="hidden sm:block text-xs text-gray-700 mt-1.5 text-center">
           Enter to send · Shift+Enter for new line
         </p>
       </div>

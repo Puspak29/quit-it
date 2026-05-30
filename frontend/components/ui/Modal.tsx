@@ -25,8 +25,7 @@ export const Modal = ({ open, onClose, title, children, className }: ModalProps)
   return (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          {/* Backdrop */}
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -36,13 +35,21 @@ export const Modal = ({ open, onClose, title, children, className }: ModalProps)
             onClick={onClose}
           />
           {/* Panel */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ type: "spring", bounce: 0.3, duration: 0.4 }}
-            className={cn('relative glass-panel rounded-2xl p-6 w-full max-w-md z-10 overflow-hidden', className)}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            transition={{ type: 'spring', bounce: 0.2, duration: 0.45 }}
+            className={cn(
+              'relative glass-panel w-full sm:max-w-md z-10',
+              'rounded-t-2xl sm:rounded-2xl',
+              'p-6 pb-8 sm:pb-6',
+              'max-h-[90vh] overflow-y-auto',
+              className
+            )}
           >
+            {/* Drag handle — visible on mobile only */}
+            <div className="sm:hidden w-10 h-1 bg-zinc-700 rounded-full mx-auto mb-5" />
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-zinc-100 tracking-tight">{title}</h2>
               <button

@@ -8,9 +8,9 @@ export default function CoachPage() {
         useCoach();
 
     return (
-        <div className="grid grid-cols-3 gap-6 h-full">
-            {/* Chat — takes most of the space */}
-            <div className="col-span-2">
+        <div className="flex flex-col md:grid md:grid-cols-3 gap-6 h-full">
+            {/* Chat — full width on mobile, 2/3 on desktop */}
+            <div className="md:col-span-2 min-h-0">
                 <ChatWindow
                     messages={messages}
                     loading={loading}
@@ -21,23 +21,22 @@ export default function CoachPage() {
                 />
             </div>
 
-            {/* Sidebar */}
-            <div className="space-y-4">
+            {/* Sidebar — horizontal scroll row on mobile, vertical stack on desktop */}
+            <div className="flex flex-row md:flex-col gap-3 md:gap-4 overflow-x-auto md:overflow-visible pb-1 md:pb-0 -mx-1 px-1 hide-scrollbar">
                 {/* Urge button */}
-                <div>
+                <div className="shrink-0 w-64 md:w-auto">
                     <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">
                         Emergency
                     </p>
                     <UrgeButton
                         onResponse={(msg) => {
-                            // Pipe urge response into chat as context
                             sendMessage(`I just got this advice for an urge I had: "${msg}". Can you help me follow through?`);
                         }}
                     />
                 </div>
 
                 {/* Tips */}
-                <div className="glass rounded-xl p-4 space-y-3">
+                <div className="glass rounded-xl p-4 space-y-3 shrink-0 w-64 md:w-auto">
                     <p className="text-xs text-gray-500 uppercase tracking-wider">
                         What to ask
                     </p>
@@ -56,7 +55,7 @@ export default function CoachPage() {
                 </div>
 
                 {/* Reminder */}
-                <div className="glass rounded-xl p-4">
+                <div className="glass rounded-xl p-4 shrink-0 w-64 md:w-auto">
                     <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">
                         Remember
                     </p>

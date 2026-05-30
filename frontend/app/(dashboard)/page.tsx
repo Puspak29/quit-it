@@ -57,7 +57,7 @@ export default function DashboardPage() {
     >
       <motion.div variants={itemVariants}>
         <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-2">
-          Hello there, <span className="text-gradient">{dashboard?.user.name?.split(' ')[0] ?? 'there'}</span>
+          Hello there, <span className="text-gradient">{dashboard?.user.name?.split(' ')[0] ?? 'user'}</span>
         </h1>
         <p className="text-zinc-400 text-sm mt-2">Here is your recovery overview for today.</p>
       </motion.div>
