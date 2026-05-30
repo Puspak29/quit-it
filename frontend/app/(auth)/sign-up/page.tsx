@@ -41,6 +41,7 @@ export default function SignUpPage() {
                     expires: 7
                 });
 
+                await new Promise(r => setTimeout(r, 200));
                 await refreshUser(); // Refresh user data in context
                 toast.dismiss(); // Dismiss loading toast
 

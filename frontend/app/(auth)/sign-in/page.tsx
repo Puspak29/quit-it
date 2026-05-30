@@ -30,7 +30,8 @@ export default function SignInPage() {
                 Cookies.set('frontend-token', response.data.data.token, { 
                     expires: 7
                 });
-
+                
+                await new Promise(r => setTimeout(r, 200));
                 await refreshUser(); // Refresh user data in context
                 toast.dismiss(); // Dismiss loading toast
 
