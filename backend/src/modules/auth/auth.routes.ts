@@ -17,6 +17,6 @@ router.post('/login',
         password: 'string',
     }), 
     asyncHandler(authController.login));
-router.post('/logout', asyncHandler(authController.logout));
+// router.post('/logout', asyncHandler(authController.logout));
 
 export const authRoutes = router;

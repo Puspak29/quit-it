@@ -23,7 +23,7 @@ app.disable('etag');
 // Security & Parsing
 app.use(helmet());
 app.set('trust proxy', 1);
-app.use(cors({ origin: env.FRONTEND_URL, credentials: true }));
+app.use(cors({ origin: env.FRONTEND_URL }));
 app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser());
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
