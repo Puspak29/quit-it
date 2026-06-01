@@ -69,35 +69,11 @@ export default function SignUpPage() {
                 <div className="p-8 space-y-8 bg-white/3 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/10 relative overflow-hidden">
 
                     <div className="text-center space-y-2">
-                        {/* <motion.div 
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
-                            className="w-12 h-12 mx-auto bg-linear-to-tr from-violet-500 to-fuchsia-500 rounded-2xl flex items-center justify-center shadow-lg shadow-violet-500/30 mb-4"
-                        >
-                            <Activity className="w-6 h-6 text-white" />
-                        </motion.div> */}
                         <h2 className="text-3xl font-bold text-white tracking-tight">Create Account</h2>
                         <p className="text-zinc-400">Start your journey to recovery today</p>
                     </div>
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="space-y-4">
-                            {/* <div className="space-y-1.5">
-                                <label className="block text-sm font-medium text-zinc-300 ml-1">Name</label>
-                                <div className="relative group">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <User className="h-5 w-5 text-zinc-500 group-focus-within:text-violet-400 transition-colors" />
-                                    </div>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-3 bg-black/40 border border-white/10 rounded-xl focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 text-white placeholder-zinc-500 transition-all outline-none backdrop-blur-sm"
-                                        placeholder="John Doe"
-                                    />
-                                </div>
-                            </div> */}
                             <div className="space-y-1.5">
                                 <label className="block text-sm font-medium text-zinc-300 ml-1">Email</label>
                                 <div className="relative group">

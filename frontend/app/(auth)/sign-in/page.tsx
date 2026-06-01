@@ -61,14 +61,6 @@ export default function SignInPage() {
                 <div className="p-8 space-y-8 bg-white/3 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/10 relative overflow-hidden">
 
                     <div className="text-center space-y-2">
-                        {/* <motion.div 
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
-                            className="w-12 h-12 mx-auto bg-linear-to-tr from-violet-500 to-fuchsia-500 rounded-2xl flex items-center justify-center shadow-lg shadow-violet-500/30 mb-4"
-                        >
-                            <Activity className="w-6 h-6 text-white" />
-                        </motion.div> */}
                         <h2 className="text-3xl font-bold text-white tracking-tight">Welcome Back</h2>
                         <p className="text-zinc-400">Sign in to continue your recovery journey</p>
                     </div>

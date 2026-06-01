@@ -9,7 +9,7 @@ export function middleware(req: NextRequest) {
 
   const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route));
   const token = req.cookies.get('frontend-token')?.value;
-  console.log('Middleware: Checking authentication for', pathname, 'Token:', token);
+  // console.log('Middleware: Checking authentication for', pathname, 'Token:', token);
 
   if (!isPublicRoute && (!token || token === 'undefined' || token === 'null' || token === '')) {
     return NextResponse.redirect(new URL('/sign-in', req.url));

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '../types';
 import { userService } from '../services/user.service';
-import { authService } from '../services/auth.service';
+// import { authService } from '../services/auth.service';
 import Cookies from 'js-cookie';
 
 interface AuthContextType {
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async () => {
     try {
-      await authService.logout();
+      // await authService.logout();
       Cookies.remove('frontend-token');
     } catch (error) {
       console.error('Logout error', error);
