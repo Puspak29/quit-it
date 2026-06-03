@@ -1,9 +1,10 @@
 import { Response } from 'express';
+import bcrypt from 'bcryptjs';
 import { prisma } from '../../config/db';
 import { cache } from '../../utils/cache';
 import { streakService } from '../../services/streak.service';
 import { AuthRequest } from '../../middlewares/auth.middleware';
-import { NotFoundError } from '../../utils/errors';
+import { NotFoundError, AppError } from '../../utils/errors';
 import { sendSuccess } from '../../utils/responseHelper';
 import { HTTP_STATUS } from '../../config/constants';
 
@@ -108,5 +109,53 @@ export const userController = {
             console.error("Error setting dashboard in cache:", error);
         }
         sendSuccess(res, HTTP_STATUS.OK, "Dashboard retrieved", { dashboard });
+    },
+
+    async updateProfile(req: AuthRequest, res: Response): Promise<void> {
+        const { name, email, currentPassword, newPassword } = req.body;
+
+        const user = await prisma.user.findUnique({ where: { id: req.userId! } });
+        if (!user) throw new NotFoundError('User');
+
+        // Password change requested — validate current password first
+        let hashedNewPassword: string | undefined;
+        if (newPassword) {
+            if (!currentPassword) {
+                throw new AppError('Current password is required to set a new password', HTTP_STATUS.BAD_REQUEST);
+            }
+            const isValid = await bcrypt.compare(currentPassword, user.password);
+            if (!isValid) {
+                throw new AppError('Current password is incorrect', HTTP_STATUS.BAD_REQUEST);
+            }
+            hashedNewPassword = await bcrypt.hash(newPassword, 10);
+        }
+
+        // Check email uniqueness if being changed
+        if (email && email !== user.email) {
+            const existing = await prisma.user.findUnique({ where: { email } });
+            if (existing) {
+                throw new AppError('Email is already taken', HTTP_STATUS.BAD_REQUEST);
+            }
+        }
+
+        const updated = await prisma.user.update({
+            where: { id: req.userId! },
+            data: {
+                ...(name !== undefined && name?.trim() !== '' && { name }),
+                ...(email !== undefined && email?.trim() !== '' && { email }),
+                ...(hashedNewPassword && { password: hashedNewPassword }),
+            },
+        });
+
+        // Invalidate caches
+        try {
+            await cache.del(`user:${req.userId}`);
+            await cache.del(`dashboard:${req.userId}`);
+        } catch (err) {
+            console.error('Cache invalidation error:', err);
+        }
+
+        const { password: _, ...userWithoutPassword } = updated;
+        sendSuccess(res, HTTP_STATUS.OK, 'Profile updated successfully', { user: userWithoutPassword });
     },
 };
