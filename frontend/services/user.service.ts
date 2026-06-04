@@ -5,6 +5,13 @@ interface Me {
     user: User & { addictions: Addiction[] };
 }
 
+export interface UpdateProfilePayload {
+  name?: string;
+  email?: string;
+  currentPassword?: string;
+  newPassword?: string;
+}
+
 export const userService = {
   sync: (data: {
     email: string;
@@ -29,5 +36,11 @@ export const userService = {
     request.patch(
       "/api/users/fcm-token",
       { fcmToken }
+    ),
+
+  updateProfile: (data: UpdateProfilePayload) =>
+    request.patch<{ success: boolean; data: { user: User }; message?: string }>(
+      "/api/users/profile",
+      data
     ),
 };

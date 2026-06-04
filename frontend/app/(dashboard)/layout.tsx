@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, CheckSquare, MessageSquare, BarChart3, Loader2, LogOut } from 'lucide-react';
+import { LayoutDashboard, CheckSquare, MessageSquare, BarChart3, Settings, Loader2, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 // import { useNotification } from '@/hooks/useNotification';
 
@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: '/checkin', label: 'Check-in', icon: CheckSquare },
   { href: '/coach', label: 'AI Coach', icon: MessageSquare },
   { href: '/insights', label: 'Insights', icon: BarChart3 },
+  { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
 export default function DashboardLayout({

@@ -11,5 +11,6 @@ router.use(requireAuth);
 router.get('/me', asyncHandler(userController.getMe));
 router.patch('/fcm-token', asyncHandler(userController.updateFcmToken));
 router.get('/dashboard', asyncHandler(userController.getDashboard));
+router.patch('/profile', asyncHandler(userController.updateProfile));
 
 export default router;
