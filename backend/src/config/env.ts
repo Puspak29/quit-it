@@ -20,6 +20,7 @@ export const env = {
     // Redis
     REDIS_URL: required('UPSTASH_REDIS_REST_URL'),
     REDIS_TOKEN: required('UPSTASH_REDIS_REST_TOKEN'),
+    REDIS_QUEUE_URL: required('REDIS_QUEUE_URL'),
 
     // AI 
     GEMINI_API_KEY: required('GEMINI_API_KEY'),
