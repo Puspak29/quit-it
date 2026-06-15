@@ -4,14 +4,35 @@ import { prisma } from '../config/db';
 import { ModerationJobData } from '../queues/jobs.types';
 
 // Tiered keyword lists — more serious = higher tier
-const SELF_HARM_KEYWORDS = [
-    'want to die', 'end my life', 'kill myself', 'suicide', 'self harm',
-];
+const KEYWORD_TIERS = [
+    {
+        reason: 'SELF_HARM' as const,
+        status: 'HIDDEN' as const,
+        keywords: ['want to die', 'end my life', 'kill myself', 'suicide', 'self harm', 'self-harm'],
+    },
+    {
+        reason: 'HATE_SPEECH' as const,
+        status: 'FLAGGED' as const,
+        keywords: ['nigger', 'faggot', 'retard', 'chink', 'kike'],
+    },
+    {
+        reason: 'AUTO_KEYWORD' as const,
+        status: 'FLAGGED' as const,
+        keywords: ['sell drugs', 'buy drugs', 'where to get', 'my dealer', 'drug supplier'],
+    },
+] as const;
 
-const FLAG_KEYWORDS = [
-    'sell drugs', 'buy drugs', 'where to get', 'dealer', 'supplier',
-    'nigger', 'faggot', 'retard', // hate speech
-];
+type MatchedTier = { reason: (typeof KEYWORD_TIERS)[number]['reason']; status: (typeof KEYWORD_TIERS)[number]['status'] };
+
+function matchTier(content: string): MatchedTier | null {
+    const lower = content.toLowerCase();
+    for (const tier of KEYWORD_TIERS) {
+        if (tier.keywords.some((kw) => lower.includes(kw))) {
+            return { reason: tier.reason, status: tier.status };
+        }
+    }
+    return null;
+}
 
 function containsAny(text: string, keywords: string[]): string | null {
     const lower = text.toLowerCase();
@@ -21,49 +42,42 @@ function containsAny(text: string, keywords: string[]): string | null {
 const moderationWorker = new Worker<ModerationJobData>(
     'moderation',
     async (job: Job<ModerationJobData>) => {
-        const { messageId, content } = job.data;
+        const { messageId, content, userId, communityId } = job.data;
 
-        // Self-harm check — highest priority, immediate hide
-        const selfHarmHit = containsAny(content, SELF_HARM_KEYWORDS);
-        if (selfHarmHit) {
-            await prisma.communityMessage.update({
-                where: { id: messageId },
-                data: { status: 'HIDDEN' },
-            });
-            await prisma.moderationFlag.create({
-                data: {
-                    messageId,
-                    flaggedBy: 'system',
-                    reason: 'SELF_HARM',
-                },
-            });
-            console.warn(`[Moderation] Self-harm content hidden: ${messageId}`);
-            return { action: 'hidden', reason: 'SELF_HARM' };
+        const isUserFlagged = job.name === 'review-flagged';
+        const match = matchTier(content);
+
+        if(!match && !isUserFlagged){
+            return { action: 'clean' };
         }
 
-        // General keyword flag — flag for review, still visible to sender
-        const flagHit = containsAny(content, FLAG_KEYWORDS);
-        if (flagHit) {
-            await prisma.communityMessage.update({
+        const status = match?.status ?? 'FLAGGED';
+        const reason = match?.reason ?? 'SPAM';
+        const flaggedBy = isUserFlagged ? userId : null;    // null = system, userId = reporter
+        const flagSource = isUserFlagged ? 'USER' : 'SYSTEM';
+
+        // Atomic: message update + flag creation succeed or fail together
+        await prisma.$transaction([
+            prisma.communityMessage.update({
                 where: { id: messageId },
-                data: { status: 'FLAGGED' },
-            });
-            await prisma.moderationFlag.create({
+                data: { status },
+            }),
+            prisma.moderationFlag.create({
                 data: {
                     messageId,
-                    flaggedBy: 'system',
-                    reason: 'AUTO_KEYWORD',
+                    flaggedBy,       // null for system flags — no FK violation
+                    flagSource,
+                    reason,
                 },
-            });
-            console.warn(`[Moderation] Message flagged for review: ${messageId} (keyword: ${flagHit})`);
-            return { action: 'flagged', reason: 'AUTO_KEYWORD', keyword: flagHit };
-        }
+            }),
+        ]);
 
-        return { action: 'clean' };
+        console.warn(`[Moderation] ${flagSource} ${status.toLowerCase()} message ${messageId} (${reason})`);
+        return { action: status.toLowerCase(), reason, source: flagSource };
     },
     { connection: bullmqRedis as any, concurrency: 10 },
 );
 
 moderationWorker.on('failed', (job, err) => {
-    console.error(`[Moderation] Job ${job?.id} failed:`, err.message);
+    console.error(`[Moderation] Job ${job?.id} failed after retries:`, err.message);
 });

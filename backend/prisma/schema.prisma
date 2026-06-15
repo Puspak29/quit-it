@@ -23,7 +23,7 @@ model User {
     aiMessages AiMessage[]
     communityMembers CommunityMember[]
     messages         CommunityMessage[]
-    moderationFlags  ModerationFlag[]
+    moderationFlags  ModerationFlag[]   @relation("FlagReporter")
 
     @@index([email])
 }
@@ -175,21 +175,28 @@ enum MessageStatus {
 
 // ── Moderation Flags ─────────────────────────────────────────────────
 model ModerationFlag {
-    id        String     @id @default(uuid())
-    messageId String
-    flaggedBy String     // userId who reported, or "system" for auto-flags
-    reason    FlagReason
-    createdAt DateTime   @default(now())
+    id         String     @id @default(uuid())
+    messageId  String
+    flaggedBy  String?    // null = system auto-flag
+    flagSource FlagSource @default(SYSTEM)
+    reason     FlagReason
+    createdAt  DateTime   @default(now())
 
-    message CommunityMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
-    user    User             @relation(fields: [flaggedBy], references: [id], onDelete: Cascade)
+    message  CommunityMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+    reporter User?            @relation("FlagReporter", fields: [flaggedBy], references: [id], onDelete: SetNull)
 
     @@index([messageId])
+    @@index([flagSource])
+}
+
+enum FlagSource {
+    SYSTEM
+    USER
 }
 
 enum FlagReason {
     SPAM
     HATE_SPEECH
     SELF_HARM
-    AUTO_KEYWORD  // flagged by the moderation worker
+    AUTO_KEYWORD
 }
