@@ -15,3 +15,9 @@ export interface UserContext {
 export type MoodType = 'great' | 'good' | 'okay' | 'bad' | 'terrible';
 export type AddictionGoal = 'quit' | 'reduce';
 export type AddictionType = 'smoking' | 'porn' | 'alcohol' | 'social_media' | 'gambling' | 'custom';
+
+export interface CommunityType {
+    addictionType: AddictionType;
+    name: string;
+    description: string;
+}
