@@ -19,3 +19,15 @@ export const cache = {
         if (keys.length > 0) await redis.del(...keys);
     },
 };
+
+export async function safeCache<T>(
+    fn: () => Promise<T>,
+    label = 'cache',
+): Promise<T | null> {
+    try {
+        return await fn();
+    } catch (err) {
+        console.error(`[${label}] Cache operation failed:`, err);
+        return null;
+    }
+}

@@ -2,7 +2,7 @@ import { Response } from "express";
 import { AuthRequest } from "../../middlewares/auth.middleware";
 import { prisma } from "../../config/db";
 import { sendSuccess } from "../../utils/responseHelper";
-import { HTTP_STATUS } from "../../config/constants";
+import { HTTP_STATUS, PAGE_SIZE_DEFAULT, PAGE_SIZE_MAX } from "../../config/constants";
 import { NotFoundError } from "../../utils/errors";
 
 export const communityController = {
@@ -96,5 +96,38 @@ export const communityController = {
         });
 
         sendSuccess(res, HTTP_STATUS.OK, `Left community ${community.name} successfully`);
+    },
+
+    async getMessages(req: AuthRequest, res: Response): Promise<void> {
+        const { cursor, limit = PAGE_SIZE_DEFAULT } = req.query as { cursor?: string; limit?: number };
+        const { communityId } = req.params;
+        const userId = req.userId!;
+
+        const take = Math.min(limit, PAGE_SIZE_MAX);
+ 
+        const rows = await prisma.communityMessage.findMany({
+            where: {
+                communityId,
+                OR: [
+                    { status: 'VISIBLE' },
+                    { status: 'FLAGGED', userId },  // sender sees their own flagged messages
+                ],
+            },
+            orderBy: { createdAt: 'desc' },
+            take: take + 1,                         // +1 to determine hasMore
+            ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+            include: { user: { select: { id: true, name: true } } },
+        });
+ 
+        const hasMore = rows.length > take;
+        const messages = hasMore ? rows.slice(0, take) : rows;
+
+        const result = {
+            messages,
+            nextCursor: hasMore ? messages[messages.length - 1].id : null,
+            hasMore,
+        }
+
+        sendSuccess(res, HTTP_STATUS.OK, "Messages retrieved successfully", result);
     }
 }

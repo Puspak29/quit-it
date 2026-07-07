@@ -3,7 +3,7 @@ import { Server as IOServer, Socket } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import { env } from './env';
 import { prisma } from './db';
-import { WS_EVENTS } from '../config/constants';
+import { WS_EVENTS, COMMUNITY_MSG_MAX_LENGTH } from '../config/constants';
 import { communityEvents } from '../events/community.events';
 
 let io: IOServer;
@@ -62,8 +62,8 @@ async function handleSendMessage(
     const userId = (socket as any).userId as string;
 
     if (!payload.content?.trim()) return;
-    if (payload.content.length > 1000) {
-        socket.emit('error', { message: 'Message too long (max 1000 characters)' });
+    if (payload.content.length > COMMUNITY_MSG_MAX_LENGTH) {
+        socket.emit('error', { message: `Message too long (max ${COMMUNITY_MSG_MAX_LENGTH} characters)` });
         return;
     }
 

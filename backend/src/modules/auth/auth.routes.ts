@@ -19,4 +19,4 @@ router.post('/login',
     asyncHandler(authController.login));
 // router.post('/logout', asyncHandler(authController.logout));
 
-export const authRoutes = router;
+export default router;

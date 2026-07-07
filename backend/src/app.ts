@@ -13,7 +13,8 @@ import addictionRoutes from './modules/addiction/addiction.routes';
 import relapseRoutes from './modules/relapse/relapse.routes';
 import checkinRoutes from './modules/checkin/checkin.routes';
 import aiRoutes from './modules/ai/ai.routes';
-import { authRoutes } from './modules/auth/auth.routes';
+import authRoutes from './modules/auth/auth.routes';
+import communityRoutes from './modules/community/community.routes';
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use('/api/addictions', addictionRoutes);
 app.use('/api/relapses', relapseRoutes);
 app.use('/api/checkins', checkinRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/communities', communityRoutes);
 
 // 404 Handler 
 app.use((_req, res) => {
@@ -47,9 +49,8 @@ app.use((_req, res) => {
 // Global Error Handler 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     if (err instanceof AppError) {
-        return res.status(err.statusCode).json({
-            error: err.message,
-            ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+        return sendError(res, err.statusCode, err.message, {
+            ...(env.NODE_ENV === 'development' && { stack: err.stack })
         });
     }
 

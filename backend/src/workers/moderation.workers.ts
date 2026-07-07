@@ -39,7 +39,7 @@ function containsAny(text: string, keywords: string[]): string | null {
     return keywords.find((kw) => lower.includes(kw)) ?? null;
 }
 
-const moderationWorker = new Worker<ModerationJobData>(
+export const moderationWorker = new Worker<ModerationJobData>(
     'moderation',
     async (job: Job<ModerationJobData>) => {
         const { messageId, content, userId, communityId } = job.data;

@@ -30,3 +30,15 @@ export class ValidationError extends AppError {
         super(message, HTTP_STATUS.BAD_REQUEST);
     }
 }
+
+export class ForbiddenError extends AppError {
+    constructor(message = 'Forbidden') {
+        super(message, HTTP_STATUS.FORBIDDEN);
+    }
+}
+
+export class ConflictError extends AppError {
+    constructor(message: string) {
+        super(message, HTTP_STATUS.CONFLICT);
+    }
+}

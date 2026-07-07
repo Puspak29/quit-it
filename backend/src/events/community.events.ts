@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import { milestoneQueue, moderationQueue, notificationQueue } from '../queues';
 import { prisma } from '../config/db';
 import { streakService } from '../services/streak.service';
+import { MILESTONE_DAYS } from '../config/constants'; 
 
 export interface MessageCreatedPayload {
     messageId: string;
@@ -21,6 +22,10 @@ export interface MessageFlaggedPayload {
 
 class CommunityEventEmitter extends EventEmitter {}
 export const communityEvents = new CommunityEventEmitter();
+
+communityEvents.on('error', (err) => {
+    console.error('[CommunityEvents] Error:', err);
+});
 
 // message:created
 communityEvents.on('message:created', async(payload: MessageCreatedPayload) => {
@@ -42,9 +47,8 @@ communityEvents.on('message:created', async(payload: MessageCreatedPayload) => {
 
     if(user?.addictions[0]) {
         const streak = await streakService.computeStreak(userId, user.addictions[0].id);
-        const MILESTONE_DAYS = [7, 30, 90, 180, 365];
 
-        if(MILESTONE_DAYS.includes(streak)) {
+        if((MILESTONE_DAYS as readonly number[]).includes(streak)) {
             await milestoneQueue.add('check-milestone', {
                 userId,
                 userName: user.name ?? 'Anonymous',
@@ -52,6 +56,20 @@ communityEvents.on('message:created', async(payload: MessageCreatedPayload) => {
                 addictionType,
                 streakDays: streak,
             });
+
+            // if(user.fcmToken){
+            //     await notificationQueue.add('send-milestone', {
+            //         recipientId: userId,
+            //         fcmToken: user.fcmToken,
+            //         title: `${streak} days clean!`,
+            //         body: `You've hit a major milestone. Keep going!`,
+            //         data: {
+            //             type: 'milestone',
+            //             streakDays: String(streak),
+            //             addictionType
+            //         }
+            //     });
+            // }
         }
     }
 
@@ -59,21 +77,25 @@ communityEvents.on('message:created', async(payload: MessageCreatedPayload) => {
     const mentions = content.match(/@(\w+)/g)?.map((m) => m.slice(1)) ?? [];
     if (mentions.length > 0) {
         const mentioned = await prisma.user.findMany({
-            where: { name: { in: mentions }, fcmToken: { not: null } },
+            where: { name: { in: mentions }, fcmToken: { not: null }, id: { not: userId } },
             select: { id: true, fcmToken: true, name: true },
         });
 
-        await Promise.all(
-            mentioned.map((u) =>
-                notificationQueue.add('send-mention', {
-                    recipientId: u.id,
-                    fcmToken: u.fcmToken!,
-                    title: `${user?.name ?? 'Someone'} mentioned you`,
-                    body: content.slice(0, 100),
-                    data: { messageId, communityId },
-                }),
-            ),
-        );
+        // await Promise.all(
+        //     mentioned.map((u) =>
+        //         notificationQueue.add('send-mention', {
+        //             recipientId: u.id,
+        //             fcmToken: u.fcmToken!,
+        //             title: `${user?.name ?? 'Someone'} mentioned you`,
+        //             body: content.slice(0, 100),
+        //             data: { 
+        //                 type: 'mention',
+        //                 messageId,
+        //                 communityId
+        //             },
+        //         }),
+        //     ),
+        // );
     }
 });
 

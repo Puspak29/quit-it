@@ -24,6 +24,20 @@ export const addictionController = {
                 metadata,
             },
         });
+
+        const community = await prisma.community.findUnique({
+            where: { addictionType: type },
+            select: { id: true },
+        });
+        if (!community) return;
+ 
+        await prisma.communityMember.upsert({
+            where: { userId_communityId: { userId: user.id, communityId: community.id } },
+            create: { userId: user.id, communityId: community.id },
+            update: {},
+        });
+        console.log(`User ${user.id} added to community ${community.id} for addiction type ${type}`);
+
         try{
             await cache.delPattern(`dashboard:${req.userId}*`);
             await cache.del(`user:${req.userId}`);
