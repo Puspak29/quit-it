@@ -35,7 +35,10 @@ async function authenticateSocket(
 }
 
 // verify community membership
-async function verifyMembership(userId: string, communityId: string): Promise<boolean> {
+async function verifyMembership(
+    userId: string,
+    communityId: string,
+): Promise<boolean> {
     const member = await prisma.communityMember.findUnique({
         where: { userId_communityId: { userId, communityId } },
     });
@@ -63,7 +66,9 @@ async function handleSendMessage(
 
     if (!payload.content?.trim()) return;
     if (payload.content.length > COMMUNITY_MSG_MAX_LENGTH) {
-        socket.emit('error', { message: `Message too long (max ${COMMUNITY_MSG_MAX_LENGTH} characters)` });
+        socket.emit('error', {
+            message: `Message too long (max ${COMMUNITY_MSG_MAX_LENGTH} characters)`,
+        });
         return;
     }
 
@@ -109,7 +114,10 @@ async function handleSendMessage(
 
 async function handleFlagMessage(
     socket: Socket,
-    payload: { messageId: string; reason: 'SPAM' | 'HATE_SPEECH' | 'SELF_HARM' },
+    payload: {
+        messageId: string;
+        reason: 'SPAM' | 'HATE_SPEECH' | 'SELF_HARM';
+    },
 ): Promise<void> {
     const userId = (socket as any).userId as string;
 
@@ -128,7 +136,7 @@ async function handleFlagMessage(
     communityEvents.emit('message:flagged', {
         messageId: payload.messageId,
         communityId: message.communityId,
-        content: message.content,    // passed in — no re-fetch needed in event handler
+        content: message.content, // passed in — no re-fetch needed in event handler
         reporterId: userId,
         reason: payload.reason,
     });

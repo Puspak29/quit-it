@@ -37,7 +37,11 @@ Rules:
 - Use plain conversational language`;
 
 export const promptBuilder = {
-    coach({ userContext, userMessage, recentMessages }: CoachPromptInput): string {
+    coach({
+        userContext,
+        userMessage,
+        recentMessages,
+    }: CoachPromptInput): string {
         const history = recentMessages
             .slice(-6) // last 3 exchanges
             .map((m) => `${m.role === 'user' ? 'User' : 'Coach'}: ${m.content}`)
@@ -62,9 +66,11 @@ Respond as the coach:`;
 
     urge({ userContext, trigger, mood, intensity }: UrgePromptInput): string {
         const urgencyLevel =
-            intensity >= 8 ? 'very high — treat this as a crisis moment'
-            : intensity >= 5 ? 'moderate — user needs grounding'
-            : 'low — user is being proactive';
+            intensity >= 8
+                ? 'very high — treat this as a crisis moment'
+                : intensity >= 5
+                  ? 'moderate — user needs grounding'
+                  : 'low — user is being proactive';
 
         return `${SYSTEM_BASE}
 
@@ -81,16 +87,19 @@ Give ONE immediate coping action tailored to this exact trigger and addiction.
 Start with the action, not with sympathy. Be direct.`;
     },
 
-    insight({ userContext, topTriggers, topMoods, totalRelapses }: InsightPromptInput): string {
-      const triggerList = topTriggers
-          .map(([t, n]) => `${t} (${n}x)`)
-          .join(', ');
+    insight({
+        userContext,
+        topTriggers,
+        topMoods,
+        totalRelapses,
+    }: InsightPromptInput): string {
+        const triggerList = topTriggers
+            .map(([t, n]) => `${t} (${n}x)`)
+            .join(', ');
 
-      const moodList = topMoods
-          .map(([m, n]) => `${m} (${n}x)`)
-          .join(', ');
+        const moodList = topMoods.map(([m, n]) => `${m} (${n}x)`).join(', ');
 
-      return `${SYSTEM_BASE}
+        return `${SYSTEM_BASE}
 
 Analyze this user's relapse patterns and give 2–3 specific, actionable insights.
 

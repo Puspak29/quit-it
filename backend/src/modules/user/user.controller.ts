@@ -14,13 +14,17 @@ export const userController = {
 
         const cacheKey = `user:${req.userId}`;
         let cached = null;
-        try{
+        try {
             cached = await cache.get(cacheKey);
+        } catch (error) {
+            console.error('Error fetching user from cache:', error);
         }
-        catch(error){
-            console.error("Error fetching user from cache:", error);
+        if (cached) {
+            sendSuccess(res, HTTP_STATUS.OK, 'User retrieved', {
+                user: cached,
+            });
+            return;
         }
-        if (cached) { sendSuccess(res, HTTP_STATUS.OK, "User retrieved", { user: cached }); return; }
 
         const user = await prisma.user.findUnique({
             where: { id: req.userId! },
@@ -31,15 +35,15 @@ export const userController = {
 
         const { password: _, ...userWithoutPassword } = user;
 
-        try{
+        try {
             await cache.set(cacheKey, userWithoutPassword, 60);
-        }
-        catch(error){
-            console.error("Error setting user in cache:", error);
+        } catch (error) {
+            console.error('Error setting user in cache:', error);
         }
 
-
-        sendSuccess(res, HTTP_STATUS.OK, "User retrieved", { user: userWithoutPassword });
+        sendSuccess(res, HTTP_STATUS.OK, 'User retrieved', {
+            user: userWithoutPassword,
+        });
     },
 
     async updateFcmToken(req: AuthRequest, res: Response): Promise<void> {
@@ -50,7 +54,9 @@ export const userController = {
             data: { fcmToken },
         });
 
-        sendSuccess(res, HTTP_STATUS.OK, "FCM token updated", { success: true });
+        sendSuccess(res, HTTP_STATUS.OK, 'FCM token updated', {
+            success: true,
+        });
     },
 
     async getDashboard(req: AuthRequest, res: Response): Promise<void> {
@@ -58,13 +64,17 @@ export const userController = {
 
         const cacheKey = `dashboard:${req.userId}`;
         let cached = null;
-        try{
+        try {
             cached = await cache.get(cacheKey);
+        } catch (error) {
+            console.error('Error fetching dashboard from cache:', error);
         }
-        catch(error){
-            console.error("Error fetching dashboard from cache:", error);
+        if (cached) {
+            sendSuccess(res, HTTP_STATUS.OK, 'Dashboard retrieved', {
+                dashboard: cached,
+            });
+            return;
         }
-        if (cached) { sendSuccess(res, HTTP_STATUS.OK, "Dashboard retrieved", { dashboard: cached }); return; }
 
         const user = await prisma.user.findUnique({
             where: { id: req.userId! },
@@ -102,30 +112,40 @@ export const userController = {
             relapseCount,
         };
 
-        try{
+        try {
             await cache.set(cacheKey, dashboard, 120); // 2 min cache
+        } catch (error) {
+            console.error('Error setting dashboard in cache:', error);
         }
-        catch(error){
-            console.error("Error setting dashboard in cache:", error);
-        }
-        sendSuccess(res, HTTP_STATUS.OK, "Dashboard retrieved", { dashboard });
+        sendSuccess(res, HTTP_STATUS.OK, 'Dashboard retrieved', { dashboard });
     },
 
     async updateProfile(req: AuthRequest, res: Response): Promise<void> {
         const { name, email, currentPassword, newPassword } = req.body;
 
-        const user = await prisma.user.findUnique({ where: { id: req.userId! } });
+        const user = await prisma.user.findUnique({
+            where: { id: req.userId! },
+        });
         if (!user) throw new NotFoundError('User');
 
         // Password change requested — validate current password first
         let hashedNewPassword: string | undefined;
         if (newPassword) {
             if (!currentPassword) {
-                throw new AppError('Current password is required to set a new password', HTTP_STATUS.BAD_REQUEST);
+                throw new AppError(
+                    'Current password is required to set a new password',
+                    HTTP_STATUS.BAD_REQUEST,
+                );
             }
-            const isValid = await bcrypt.compare(currentPassword, user.password);
+            const isValid = await bcrypt.compare(
+                currentPassword,
+                user.password,
+            );
             if (!isValid) {
-                throw new AppError('Current password is incorrect', HTTP_STATUS.BAD_REQUEST);
+                throw new AppError(
+                    'Current password is incorrect',
+                    HTTP_STATUS.BAD_REQUEST,
+                );
             }
             hashedNewPassword = await bcrypt.hash(newPassword, 10);
         }
@@ -134,7 +154,10 @@ export const userController = {
         if (email && email !== user.email) {
             const existing = await prisma.user.findUnique({ where: { email } });
             if (existing) {
-                throw new AppError('Email is already taken', HTTP_STATUS.BAD_REQUEST);
+                throw new AppError(
+                    'Email is already taken',
+                    HTTP_STATUS.BAD_REQUEST,
+                );
             }
         }
 
@@ -156,6 +179,8 @@ export const userController = {
         }
 
         const { password: _, ...userWithoutPassword } = updated;
-        sendSuccess(res, HTTP_STATUS.OK, 'Profile updated successfully', { user: userWithoutPassword });
+        sendSuccess(res, HTTP_STATUS.OK, 'Profile updated successfully', {
+            user: userWithoutPassword,
+        });
     },
 };

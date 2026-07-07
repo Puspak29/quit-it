@@ -5,14 +5,13 @@ import { connectRedis } from './config/redis';
 import { workersIndex } from './workers/index';
 
 const startServer = async (): Promise<void> => {
-    try{
+    try {
         await connectRedis();
-    }
-    catch(err){
+    } catch (err) {
         console.error('[Redis] Connection failed:', err);
     }
     await prisma.$connect();
-    console.log("[DB] Prisma connected");
+    console.log('[DB] Prisma connected');
 
     await workersIndex.startWorkers();
 

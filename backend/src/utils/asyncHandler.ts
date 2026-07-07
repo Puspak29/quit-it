@@ -7,5 +7,5 @@ export const asyncHandler = (fn: RequestHandler): RequestHandler => {
         } catch (error) {
             next(error);
         }
-    }
-}
+    };
+};

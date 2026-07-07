@@ -18,4 +18,4 @@ bullmqRedis.on('error', (error) => {
 bullmqRedis.on('end', async () => {
     console.warn('[BullMQ] Redis connection closed. Stopping workers...');
     await workersIndex.shutdown('Redis connection closed');
-})
+});

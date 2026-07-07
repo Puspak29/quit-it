@@ -5,18 +5,22 @@ import { asyncHandler } from '../../utils/asyncHandler';
 
 const router = Router();
 
-router.post('/register', 
+router.post(
+    '/register',
     validate({
         email: 'string',
         password: 'string',
-    }), 
-    asyncHandler(authController.register));
-router.post('/login', 
+    }),
+    asyncHandler(authController.register),
+);
+router.post(
+    '/login',
     validate({
         email: 'string',
         password: 'string',
-    }), 
-    asyncHandler(authController.login));
+    }),
+    asyncHandler(authController.login),
+);
 // router.post('/logout', asyncHandler(authController.logout));
 
 export default router;

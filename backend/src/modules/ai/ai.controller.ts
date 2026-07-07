@@ -9,7 +9,8 @@ import { HTTP_STATUS } from '../../config/constants';
 export const aiController = {
     async chat(req: AuthRequest, res: Response): Promise<void> {
         const { message } = req.body;
-        if (!message?.trim()) throw new ValidationError('Message cannot be empty');
+        if (!message?.trim())
+            throw new ValidationError('Message cannot be empty');
 
         const user = await prisma.user.findUnique({
             where: { id: req.userId! },
@@ -25,7 +26,10 @@ export const aiController = {
 
         const recentMessages = history
             .reverse()
-            .map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content }));
+            .map((m) => ({
+                role: m.role as 'user' | 'assistant',
+                content: m.content,
+            }));
 
         // Save user message first
         await aiService.saveMessage(user.id, 'user', message, 'COACH');
@@ -35,14 +39,16 @@ export const aiController = {
         // Save assistant reply
         await aiService.saveMessage(user.id, 'assistant', reply, 'COACH');
 
-        sendSuccess(res, HTTP_STATUS.OK, "Message processed", { reply });
+        sendSuccess(res, HTTP_STATUS.OK, 'Message processed', { reply });
     },
 
     async urge(req: AuthRequest, res: Response): Promise<void> {
         const { trigger, mood, intensity } = req.body;
 
         if (!trigger || !mood || intensity === undefined) {
-            throw new ValidationError('trigger, mood, and intensity are required');
+            throw new ValidationError(
+                'trigger, mood, and intensity are required',
+            );
         }
         if (intensity < 1 || intensity > 10) {
             throw new ValidationError('intensity must be between 1 and 10');
@@ -61,7 +67,7 @@ export const aiController = {
             intensity,
         });
 
-        sendSuccess(res, HTTP_STATUS.OK, "Urge processed", { reply });
+        sendSuccess(res, HTTP_STATUS.OK, 'Urge processed', { reply });
     },
 
     async insight(req: AuthRequest, res: Response): Promise<void> {
@@ -74,7 +80,7 @@ export const aiController = {
 
         await aiService.saveMessage(user.id, 'assistant', insight, 'INSIGHT');
 
-        sendSuccess(res, HTTP_STATUS.OK, "Insight generated", { insight });
+        sendSuccess(res, HTTP_STATUS.OK, 'Insight generated', { insight });
     },
 
     async getHistory(req: AuthRequest, res: Response): Promise<void> {
@@ -86,11 +92,14 @@ export const aiController = {
         if (!user) throw new NotFoundError('User');
 
         const messages = await prisma.aiMessage.findMany({
-            where: { userId: user.id, type: type as 'COACH' | 'URGE' | 'INSIGHT' },
+            where: {
+                userId: user.id,
+                type: type as 'COACH' | 'URGE' | 'INSIGHT',
+            },
             orderBy: { createdAt: 'asc' },
             take: Number(limit),
         });
 
-        sendSuccess(res, HTTP_STATUS.OK, "History retrieved", { messages });
+        sendSuccess(res, HTTP_STATUS.OK, 'History retrieved', { messages });
     },
 };

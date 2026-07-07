@@ -1,7 +1,7 @@
 import { prisma } from '../config/db';
 
 export const streakService = {
-  // Counts consecutive days with check-ins and no relapses
+    // Counts consecutive days with check-ins and no relapses
     async computeStreak(userId: string, addictionId: string): Promise<number> {
         const relapses = await prisma.relapse.findMany({
             where: { userId, addictionId },

@@ -13,7 +13,7 @@ const generateToken = (userId: string): string => {
     const secret: Secret = env.JWT_SECRET;
 
     const options: SignOptions = {
-        expiresIn: env.JWT_EXPIRES_IN as SignOptions["expiresIn"],
+        expiresIn: env.JWT_EXPIRES_IN as SignOptions['expiresIn'],
     };
 
     return jwt.sign(payload, secret, options);
@@ -29,12 +29,19 @@ const generateToken = (userId: string): string => {
 // };
 
 export const authController = {
-    async register(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async register(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<void> {
         const { email, password, name } = req.body;
 
         const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
-            throw new AppError('User with this email already exists', HTTP_STATUS.BAD_REQUEST);
+            throw new AppError(
+                'User with this email already exists',
+                HTTP_STATUS.BAD_REQUEST,
+            );
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -53,10 +60,17 @@ export const authController = {
         // Exclude password from response
         const { password: _, ...userWithoutPassword } = user;
 
-        sendSuccess(res, HTTP_STATUS.CREATED, 'User registered successfully', { user: userWithoutPassword, token });
+        sendSuccess(res, HTTP_STATUS.CREATED, 'User registered successfully', {
+            user: userWithoutPassword,
+            token,
+        });
     },
 
-    async login(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async login(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<void> {
         const { email, password } = req.body;
 
         const user = await prisma.user.findUnique({ where: { email } });
@@ -74,7 +88,10 @@ export const authController = {
 
         const { password: _, ...userWithoutPassword } = user;
 
-        sendSuccess(res, HTTP_STATUS.OK, 'Login successful', { user: userWithoutPassword, token });
+        sendSuccess(res, HTTP_STATUS.OK, 'Login successful', {
+            user: userWithoutPassword,
+            token,
+        });
     },
 
     // async logout(req: Request, res: Response, next: NextFunction): Promise<void> {

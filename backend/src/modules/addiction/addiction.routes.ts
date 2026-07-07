@@ -10,7 +10,7 @@ router.use(requireAuth);
 router.post(
     '/',
     validate({ type: 'string', goal: 'string' }),
-    asyncHandler(addictionController.create)
+    asyncHandler(addictionController.create),
 );
 router.get('/', asyncHandler(addictionController.getAll));
 router.patch('/:id/status', asyncHandler(addictionController.updateStatus));

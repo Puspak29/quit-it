@@ -15,10 +15,11 @@ const MILESTONE_LABELS: Record<number, string> = {
 export const milestoneWorker = new Worker<MilestoneJobData>(
     'milestones',
     async (job: Job<MilestoneJobData>) => {
-        const { userId, userName, communityId, addictionType, streakDays } = job.data;
+        const { userId, userName, communityId, addictionType, streakDays } =
+            job.data;
 
         const label = MILESTONE_LABELS[streakDays];
-        if(!label){
+        if (!label) {
             return {
                 action: 'skip',
                 reason: `not_a_milestone`,
@@ -36,17 +37,19 @@ export const milestoneWorker = new Worker<MilestoneJobData>(
                 timestamp: new Date().toISOString(),
             });
 
-        console.log(`[Milestone] Broadcast: ${userName} reached ${streakDays} days in community ${communityId}`);
+        console.log(
+            `[Milestone] Broadcast: ${userName} reached ${streakDays} days in community ${communityId}`,
+        );
 
         return {
             action: 'broadcast',
-            streakDays
+            streakDays,
         };
     },
     {
         connection: bullmqRedis as any,
         concurrency: 5,
-    }
+    },
 );
 
 milestoneWorker.on('failed', (job, err) => {

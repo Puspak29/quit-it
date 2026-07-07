@@ -10,7 +10,7 @@ router.use(requireAuth);
 router.post(
     '/',
     validate({ mood: 'string', moodScore: 'number' }),
-    asyncHandler(checkinController.create)
+    asyncHandler(checkinController.create),
 );
 router.get('/today', asyncHandler(checkinController.getToday));
 router.get('/history', asyncHandler(checkinController.getHistory));

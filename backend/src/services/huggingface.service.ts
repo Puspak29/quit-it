@@ -3,7 +3,7 @@ import { HTTP_STATUS } from '../config/constants';
 import { env } from '../config/env';
 import { AppError } from '../utils/errors';
 
-const hf = new InferenceClient(env.HF_API_KEY)
+const hf = new InferenceClient(env.HF_API_KEY);
 
 export const huggingfaceService = {
     async generate(prompt: string): Promise<string> {
@@ -17,10 +17,17 @@ export const huggingfaceService = {
             },
         });
 
-        if(!response || !response.generated_text || typeof response.generated_text !== 'string') {
-            throw new AppError('HuggingFace API error', HTTP_STATUS.BAD_GATEWAY);
+        if (
+            !response ||
+            !response.generated_text ||
+            typeof response.generated_text !== 'string'
+        ) {
+            throw new AppError(
+                'HuggingFace API error',
+                HTTP_STATUS.BAD_GATEWAY,
+            );
         }
 
         return response.generated_text.trim();
-    }
+    },
 };

@@ -1,6 +1,10 @@
 import { Queue } from 'bullmq';
 import { bullmqRedis } from '../config/bullmq.redis';
-import { MilestoneJobData, ModerationJobData, NotificationJobData } from './jobs.types';
+import {
+    MilestoneJobData,
+    ModerationJobData,
+    NotificationJobData,
+} from './jobs.types';
 
 const defaultJobOptions = {
     attempts: 3,
@@ -16,10 +20,13 @@ const defaultJobOptions = {
     },
 };
 
-export const notificationQueue = new Queue<NotificationJobData>('notificationQueue', {
-    connection: bullmqRedis as any,
-    defaultJobOptions,
-});
+export const notificationQueue = new Queue<NotificationJobData>(
+    'notificationQueue',
+    {
+        connection: bullmqRedis as any,
+        defaultJobOptions,
+    },
+);
 
 export const milestoneQueue = new Queue<MilestoneJobData>('milestones', {
     connection: bullmqRedis as any,
