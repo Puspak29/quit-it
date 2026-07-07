@@ -20,18 +20,40 @@ export const addictionController = {
                 userId: user.id,
                 type,
                 goal,
-                triggers,  // stored as JSON array
+                triggers, // stored as JSON array
                 metadata,
             },
         });
-        try{
+
+        const community = await prisma.community.findUnique({
+            where: { addictionType: type },
+            select: { id: true },
+        });
+        if (!community) return;
+
+        await prisma.communityMember.upsert({
+            where: {
+                userId_communityId: {
+                    userId: user.id,
+                    communityId: community.id,
+                },
+            },
+            create: { userId: user.id, communityId: community.id },
+            update: {},
+        });
+        console.log(
+            `User ${user.id} added to community ${community.id} for addiction type ${type}`,
+        );
+
+        try {
             await cache.delPattern(`dashboard:${req.userId}*`);
             await cache.del(`user:${req.userId}`);
-        }
-        catch(err){
+        } catch (err) {
             console.error('Error clearing cache:', err);
         }
-        sendSuccess(res, HTTP_STATUS.CREATED, "Addiction created", { addiction });
+        sendSuccess(res, HTTP_STATUS.CREATED, 'Addiction created', {
+            addiction,
+        });
     },
 
     async getAll(req: AuthRequest, res: Response): Promise<void> {
@@ -45,7 +67,9 @@ export const addictionController = {
             orderBy: { createdAt: 'desc' },
         });
 
-        sendSuccess(res, HTTP_STATUS.OK, "Addictions retrieved", { addictions });
+        sendSuccess(res, HTTP_STATUS.OK, 'Addictions retrieved', {
+            addictions,
+        });
     },
 
     async updateStatus(req: AuthRequest, res: Response): Promise<void> {
@@ -53,7 +77,9 @@ export const addictionController = {
         const validStatuses = ['ACTIVE', 'PAUSED', 'COMPLETED'];
 
         if (!validStatuses.includes(status)) {
-        throw new ValidationError(`Status must be one of: ${validStatuses.join(', ')}`);
+            throw new ValidationError(
+                `Status must be one of: ${validStatuses.join(', ')}`,
+            );
         }
 
         const user = await prisma.user.findUnique({
@@ -71,13 +97,14 @@ export const addictionController = {
             data: { status },
         });
 
-        try{
+        try {
             await cache.delPattern(`dashboard:${req.userId}*`);
-        }
-        catch(err){
+        } catch (err) {
             console.error('Error clearing cache:', err);
         }
-        
-        sendSuccess(res, HTTP_STATUS.OK, "Addiction status updated", { addiction: updated });
+
+        sendSuccess(res, HTTP_STATUS.OK, 'Addiction status updated', {
+            addiction: updated,
+        });
     },
 };

@@ -12,11 +12,15 @@ type ErrorResponse<E = unknown> = {
     errors?: E;
 };
 
-
-export const sendSuccess = <T>(res: Response, statusCode: number, message: string, data?: T) => {
-    const payload: SuccessResponse<T> = { 
-        success: true, 
-        message 
+export const sendSuccess = <T>(
+    res: Response,
+    statusCode: number,
+    message: string,
+    data?: T,
+) => {
+    const payload: SuccessResponse<T> = {
+        success: true,
+        message,
     };
 
     if (data !== undefined) payload.data = data;
@@ -24,13 +28,18 @@ export const sendSuccess = <T>(res: Response, statusCode: number, message: strin
     return res.status(statusCode).json(payload);
 };
 
-export const sendError = <E>(res: Response, statusCode: number, message: string, errors?: E) => {
-    const payload: ErrorResponse<E> = { 
-        success: false, 
-        message 
+export const sendError = <E>(
+    res: Response,
+    statusCode: number,
+    message: string,
+    errors?: E,
+) => {
+    const payload: ErrorResponse<E> = {
+        success: false,
+        message,
     };
 
     if (errors !== undefined) payload.errors = errors;
-    
+
     return res.status(statusCode).json(payload);
 };

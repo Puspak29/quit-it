@@ -9,8 +9,13 @@ router.use(requireAuth);
 
 router.post(
     '/',
-    validate({ addictionId: 'string', trigger: 'string', mood: 'string', intensity: 'number' }),
-    asyncHandler(relapseController.log)
+    validate({
+        addictionId: 'string',
+        trigger: 'string',
+        mood: 'string',
+        intensity: 'number',
+    }),
+    asyncHandler(relapseController.log),
 );
 router.get('/', asyncHandler(relapseController.getAll));
 router.get('/patterns', asyncHandler(relapseController.getPatterns));

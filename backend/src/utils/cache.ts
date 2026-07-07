@@ -3,7 +3,7 @@ import { redis } from '../config/redis';
 export const cache = {
     async get<T>(key: string): Promise<T | null> {
         const data = await redis.get(key);
-        return data && (typeof data == 'string') ? (JSON.parse(data) as T) : null;
+        return data && typeof data == 'string' ? (JSON.parse(data) as T) : null;
     },
 
     async set(key: string, value: unknown, ttlSeconds = 300): Promise<void> {
@@ -19,3 +19,15 @@ export const cache = {
         if (keys.length > 0) await redis.del(...keys);
     },
 };
+
+export async function safeCache<T>(
+    fn: () => Promise<T>,
+    label = 'cache',
+): Promise<T | null> {
+    try {
+        return await fn();
+    } catch (err) {
+        console.error(`[${label}] Cache operation failed:`, err);
+        return null;
+    }
+}

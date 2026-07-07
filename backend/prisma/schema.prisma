@@ -21,12 +21,14 @@ model User {
     relapses   Relapse[]
     checkins   Checkin[]
     aiMessages AiMessage[]
+    communityMembers CommunityMember[]
+    messages         CommunityMessage[]
+    moderationFlags  ModerationFlag[]   @relation("FlagReporter")
 
     @@index([email])
 }
 
 // ── Addictions ───────────────────────────────────────────────────────
-// One user can track multiple addictions simultaneously
 model Addiction {
     id        String          @id @default(uuid())
     userId    String
@@ -115,4 +117,86 @@ enum MessageType {
     COACH        // regular AI coach conversation
     URGE         // "I have an urge" intervention
     INSIGHT      // AI-generated pattern insight
+}
+
+// ── Communities ──────────────────────────────────────────────────────
+// One community per addiction type — seeded at startup, not user-created.
+model Community {
+    id           String   @id @default(uuid())
+    addictionType String  @unique // "smoking" | "alcohol" | etc. — matches Addiction.type
+    name         String            // "Quit Smoking Together"
+    description  String?
+    createdAt    DateTime @default(now())
+
+    members  CommunityMember[]
+    messages CommunityMessage[]
+
+    @@index([addictionType])
+}
+
+// ── Community Members ────────────────────────────────────────────────
+// Tracks who has joined — auto-joined when user creates an ACTIVE addiction.
+model CommunityMember {
+    id          String   @id @default(uuid())
+    userId      String
+    communityId String
+    joinedAt    DateTime @default(now())
+
+    user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, communityId]) // one membership per community per user
+    @@index([communityId])
+    @@index([userId])
+}
+
+// ── Community Messages ───────────────────────────────────────────────
+model CommunityMessage {
+    id          String        @id @default(uuid())
+    communityId String
+    userId      String
+    content     String        @db.Text
+    status      MessageStatus @default(VISIBLE)
+    createdAt   DateTime      @default(now())
+
+    community Community        @relation(fields: [communityId], references: [id], onDelete: Cascade)
+    user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+    flags     ModerationFlag[]
+
+    @@index([communityId, createdAt])
+    @@index([userId])
+}
+
+enum MessageStatus {
+    VISIBLE        // normal
+    FLAGGED        // under review — still visible to sender, hidden to others
+    HIDDEN         // moderation decision: removed
+}
+
+// ── Moderation Flags ─────────────────────────────────────────────────
+model ModerationFlag {
+    id         String     @id @default(uuid())
+    messageId  String
+    flaggedBy  String?    // null = system auto-flag
+    flagSource FlagSource @default(SYSTEM)
+    reason     FlagReason
+    createdAt  DateTime   @default(now())
+
+    message  CommunityMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+    reporter User?            @relation("FlagReporter", fields: [flaggedBy], references: [id], onDelete: SetNull)
+
+    @@index([messageId])
+    @@index([flagSource])
+}
+
+enum FlagSource {
+    SYSTEM
+    USER
+}
+
+enum FlagReason {
+    SPAM
+    HATE_SPEECH
+    SELF_HARM
+    AUTO_KEYWORD
 }

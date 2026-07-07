@@ -3,9 +3,10 @@ dotenv.config();
 
 const required = (key: string): string => {
     const value = process.env[key];
-    if (!value) throw new Error(`Missing required environment variable: ${key}`);
+    if (!value)
+        throw new Error(`Missing required environment variable: ${key}`);
     return value;
-}
+};
 
 export const env = {
     PORT: process.env.PORT || '3000',
@@ -20,13 +21,14 @@ export const env = {
     // Redis
     REDIS_URL: required('UPSTASH_REDIS_REST_URL'),
     REDIS_TOKEN: required('UPSTASH_REDIS_REST_TOKEN'),
+    REDIS_QUEUE_URL: required('REDIS_QUEUE_URL'),
 
-    // AI 
+    // AI
     GEMINI_API_KEY: required('GEMINI_API_KEY'),
     HF_API_KEY: required('HF_API_KEY'),
 
     // Firebase
     FIREBASE_PROJECT_ID: required('FIREBASE_PROJECT_ID'),
     FIREBASE_CLIENT_EMAIL: required('FIREBASE_CLIENT_EMAIL'),
-    FIREBASE_PRIVATE_KEY: required('FIREBASE_PRIVATE_KEY')
+    FIREBASE_PRIVATE_KEY: required('FIREBASE_PRIVATE_KEY'),
 } as const;
