@@ -1,8 +1,10 @@
+import http from 'http';
 import app from './app';
 import { env } from './config/env';
 import { prisma } from './config/db';
 import { connectRedis } from './config/redis';
 import { workersIndex } from './workers/index';
+import { initSocket } from './config/socket';
 
 const startServer = async (): Promise<void> => {
     try {
@@ -15,14 +17,17 @@ const startServer = async (): Promise<void> => {
 
     await workersIndex.startWorkers();
 
-    const server = app.listen(env.PORT, () => {
+    const httpServer = http.createServer(app);
+    initSocket(httpServer);
+
+    httpServer.listen(env.PORT, () => {
         console.log(`[Server] Running on port ${env.PORT} (${env.NODE_ENV})`);
     });
 
     // Graceful shutdown
     const shutdown = async (signal: string) => {
         console.log(`[Server] ${signal} received — shutting down`);
-        server.close(async () => {
+        httpServer.close(async () => {
             await prisma.$disconnect();
             console.log('[DB] Prisma disconnected');
             await workersIndex.shutdown(signal);
