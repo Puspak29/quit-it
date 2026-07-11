@@ -58,5 +58,43 @@ export interface Dashboard {
   relapseCount: number;
 }
 
+// Community
+export interface Community {
+  id: string;
+  addictionType: string;
+  name: string;
+  description: string | null;
+  memberCount: number;
+  messageCount: number;
+  isMember: boolean;
+}
+ 
+export interface CommunityMessage {
+  id: string;
+  communityId: string;
+  content: string;
+  status: 'VISIBLE' | 'FLAGGED' | 'HIDDEN';
+  createdAt: string;
+  user: { id: string; name: string | null };
+}
+ 
+export interface MilestoneEvent {
+  userId: string;
+  userName: string;
+  streakDays: number;
+  message: string;
+  timestamp: string;
+}
+ 
+export type FlagReason = 'SPAM' | 'HATE_SPEECH' | 'SELF_HARM';
+ 
+// Generic API response envelope — used to type all service calls
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+// Shared
 export type MoodType = 'great' | 'good' | 'okay' | 'bad' | 'terrible';
 export type AddictionType = 'smoking' | 'porn' | 'alcohol' | 'social_media' | 'gambling' | 'custom';
