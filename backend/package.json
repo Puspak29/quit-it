@@ -12,7 +12,8 @@
         "start": "node dist/index.js",
         "db:migrate": "prisma migrate dev",
         "db:generate": "prisma generate",
-        "db:seed": "ts-node src/utils/seed.ts",
+        "db:seed:dev": "ts-node src/utils/seed.ts",
+        "db:seed": "node src/utils/seed.js",
         "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\""
     },
     "dependencies": {

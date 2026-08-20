@@ -9,26 +9,54 @@ const required = (key: string): string => {
 };
 
 export const env = {
-    PORT: process.env.PORT || '3000',
-    NODE_ENV: process.env.NODE_ENV || 'development',
-    DATABASE_URL: required('DATABASE_URL'),
-    FRONTEND_URL: required('FRONTEND_URL'),
+    get PORT() {
+        return process.env.PORT || '3000';
+    },
+    get NODE_ENV() {
+        return process.env.NODE_ENV || 'development';
+    },
+    get DATABASE_URL() {
+        return required('DATABASE_URL');
+    },
+    get FRONTEND_URL() {
+        return required('FRONTEND_URL');
+    },
 
     // JWT Auth
-    JWT_SECRET: required('JWT_SECRET'),
-    JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
+    get JWT_SECRET() {
+        return required('JWT_SECRET');
+    },
+    get JWT_EXPIRES_IN() {
+        return process.env.JWT_EXPIRES_IN || '7d';
+    },
 
     // Redis
-    REDIS_URL: required('UPSTASH_REDIS_REST_URL'),
-    REDIS_TOKEN: required('UPSTASH_REDIS_REST_TOKEN'),
-    REDIS_QUEUE_URL: required('REDIS_QUEUE_URL'),
+    get REDIS_URL() {
+        return required('UPSTASH_REDIS_REST_URL');
+    },
+    get REDIS_TOKEN() {
+        return required('UPSTASH_REDIS_REST_TOKEN');
+    },
+    get REDIS_QUEUE_URL() {
+        return required('REDIS_QUEUE_URL');
+    },
 
     // AI
-    GEMINI_API_KEY: required('GEMINI_API_KEY'),
-    HF_API_KEY: required('HF_API_KEY'),
+    get GEMINI_API_KEY() {
+        return required('GEMINI_API_KEY');
+    },
+    get HF_API_KEY() {
+        return required('HF_API_KEY');
+    },
 
     // Firebase
-    FIREBASE_PROJECT_ID: required('FIREBASE_PROJECT_ID'),
-    FIREBASE_CLIENT_EMAIL: required('FIREBASE_CLIENT_EMAIL'),
-    FIREBASE_PRIVATE_KEY: required('FIREBASE_PRIVATE_KEY'),
+    get FIREBASE_PROJECT_ID() {
+        return required('FIREBASE_PROJECT_ID');
+    },
+    get FIREBASE_CLIENT_EMAIL() {
+        return required('FIREBASE_CLIENT_EMAIL');
+    },
+    get FIREBASE_PRIVATE_KEY() {
+        return required('FIREBASE_PRIVATE_KEY');
+    },
 } as const;
