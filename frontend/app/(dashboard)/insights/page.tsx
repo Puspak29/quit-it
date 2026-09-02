@@ -36,11 +36,11 @@ const InsightCard = ({ text }: { text: string }) => {
             {sections.map(({ label, content }, i) => (
                 <div key={i}>
                     {label && (
-                        <span className="text-xs font-semibold uppercase tracking-wider text-violet-400">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-accent">
                             {label}
                         </span>
                     )}
-                    <p className="text-sm text-gray-300 mt-0.5 leading-relaxed">{content}</p>
+                    <p className="text-sm text-foreground/80 mt-0.5 leading-relaxed">{content}</p>
                 </div>
             ))}
         </Card>
@@ -85,7 +85,7 @@ export default function InsightsPage() {
         return (
             <div className="space-y-4 animate-pulse">
                 {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-32 bg-gray-900 rounded-xl" />
+                    <div key={i} className="h-32 bg-foreground/10 rounded-xl" />
                 ))}
             </div>
         );
@@ -96,8 +96,8 @@ export default function InsightsPage() {
     return (
         <div className="space-y-6 max-w-2xl">
             <div>
-                <h1 className="text-2xl font-bold text-white">Pattern Insights</h1>
-                <p className="text-gray-500 text-sm mt-1">
+                <h1 className="text-2xl font-bold text-foreground">Pattern Insights</h1>
+                <p className="text-foreground/50 text-sm mt-1">
                     AI analysis of your relapse patterns
                 </p>
             </div>
@@ -106,18 +106,18 @@ export default function InsightsPage() {
             <div className="grid grid-cols-3 gap-4">
                 <Card>
                     <CardTitle>Total relapses</CardTitle>
-                    <p className="text-3xl font-bold text-white mt-1">
+                    <p className="text-3xl font-bold text-foreground mt-1">
                         {patterns?.totalRelapses ?? 0}
                     </p>
                 </Card>
 
                 <Card>
                     <CardTitle>Top trigger</CardTitle>
-                    <p className="text-lg font-semibold text-white mt-1 capitalize">
+                    <p className="text-lg font-semibold text-foreground mt-1 capitalize">
                         {patterns?.topTriggers?.[0]?.[0] ?? '—'}
                     </p>
                     {patterns?.topTriggers?.[0] && (
-                        <p className="text-xs text-gray-600 mt-0.5">
+                        <p className="text-xs text-foreground/40 mt-0.5">
                             {patterns.topTriggers[0][1]}x logged
                         </p>
                     )}
@@ -125,11 +125,11 @@ export default function InsightsPage() {
 
                 <Card>
                     <CardTitle>Top mood</CardTitle>
-                    <p className="text-lg font-semibold text-white mt-1 capitalize">
+                    <p className="text-lg font-semibold text-foreground mt-1 capitalize">
                         {patterns?.topMoods?.[0]?.[0] ?? '—'}
                     </p>
                     {patterns?.topMoods?.[0] && (
-                        <p className="text-xs text-gray-600 mt-0.5">
+                        <p className="text-xs text-foreground/40 mt-0.5">
                             during {patterns.topMoods[0][1]} relapses
                         </p>
                     )}
@@ -147,12 +147,12 @@ export default function InsightsPage() {
                             return (
                                 <div key={trigger}>
                                     <div className="flex justify-between text-xs mb-1">
-                                        <span className="text-gray-300 capitalize">{trigger}</span>
-                                        <span className="text-gray-500">{count}x</span>
+                                        <span className="text-foreground/80 capitalize">{trigger}</span>
+                                        <span className="text-foreground/50">{count}x</span>
                                     </div>
-                                    <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                                    <div className="h-1.5 bg-foreground/10 rounded-full overflow-hidden">
                                         <div
-                                            className="h-full bg-violet-500 rounded-full transition-all duration-500"
+                                            className="h-full bg-primary rounded-full transition-all duration-500"
                                             style={{ width: `${pct}%` }}
                                         />
                                     </div>
@@ -167,13 +167,13 @@ export default function InsightsPage() {
             <div>
                 {!hasData ? (
                     <Card>
-                        <p className="text-gray-500 text-sm text-center py-4">
+                        <p className="text-foreground/50 text-sm text-center py-4">
                             Log at least 3 relapses to unlock AI pattern analysis
                         </p>
                     </Card>
                 ) : insight ? (
                     <div className="space-y-3">
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">
+                        <p className="text-xs text-foreground/50 uppercase tracking-wider">
                             AI Analysis
                         </p>
                         <InsightCard text={insight} />
@@ -188,10 +188,10 @@ export default function InsightsPage() {
                     </div>
                 ) : (
                     <Card className="text-center py-6 space-y-3">
-                        <p className="text-gray-400 text-sm">
+                        <p className="text-foreground/60 text-sm">
                             Ready to analyze your {patterns.totalRelapses} logged relapses
                         </p>
-                        {error && <p className="text-red-400 text-xs">{error}</p>}
+                        {error && <p className="text-red-500 text-xs">{error}</p>}
                         <Button onClick={fetchInsight} loading={insightLoading}>
                             Generate AI insight
                         </Button>
@@ -202,7 +202,7 @@ export default function InsightsPage() {
             {/* Recent relapses */}
             {patterns?.recentRelapses && patterns.recentRelapses.length > 0 && (
                 <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-3">
+                    <p className="text-xs text-foreground/50 uppercase tracking-wider mb-3">
                         Recent relapses
                     </p>
                     <div className="space-y-2">
@@ -212,22 +212,22 @@ export default function InsightsPage() {
                                 className="glass rounded-xl px-4 py-3 flex items-center justify-between"
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="w-2 h-2 rounded-full bg-red-400 flex-shrink-0" />
+                                    <div className="w-2 h-2 rounded-full bg-accent flex-shrink-0" />
                                     <div>
-                                        <p className="text-sm text-white capitalize">{r.trigger}</p>
-                                        <p className="text-xs text-gray-500 capitalize">
+                                        <p className="text-sm text-foreground capitalize">{r.trigger}</p>
+                                        <p className="text-xs text-foreground/50 capitalize">
                                             Feeling {r.mood}
                                         </p>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-xs text-gray-500">
+                                    <p className="text-xs text-foreground/50">
                                         {new Date(r.occurredAt).toLocaleDateString('en-US', {
                                             month: 'short',
                                             day: 'numeric',
                                         })}
                                     </p>
-                                    <p className="text-xs text-gray-600">
+                                    <p className="text-xs text-foreground/40">
                                         intensity {r.intensity}/10
                                     </p>
                                 </div>

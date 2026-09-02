@@ -41,7 +41,7 @@ export default function OnboardingPage() {
     setError('');
     try {
       await addictionService.create({ type, goal, triggers });
-      router.push('/');
+      router.push('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
@@ -57,7 +57,7 @@ export default function OnboardingPage() {
           <div
             key={s}
             className={`h-1 flex-1 rounded-full transition-colors ${
-              s <= step ? 'bg-violet-500' : 'bg-gray-800'
+              s <= step ? 'bg-cyan-500' : 'bg-gray-800'
             }`}
           />
         ))}
@@ -78,7 +78,7 @@ export default function OnboardingPage() {
                 onClick={() => setType(opt.value)}
                 className={`glass rounded-xl p-4 text-left transition-all ${
                   type === opt.value
-                    ? 'border-violet-500 bg-violet-900/20'
+                    ? 'border-cyan-500 bg-cyan-900/20'
                     : 'hover:border-gray-700'
                 }`}
               >
@@ -114,7 +114,7 @@ export default function OnboardingPage() {
                 onClick={() => setGoal(opt.value as 'quit' | 'reduce')}
                 className={`glass rounded-xl p-5 text-left transition-all ${
                   goal === opt.value
-                    ? 'border-violet-500 bg-violet-900/20'
+                    ? 'border-cyan-500 bg-cyan-900/20'
                     : 'hover:border-gray-700'
                 }`}
               >
@@ -150,7 +150,7 @@ export default function OnboardingPage() {
                 onClick={() => toggleTrigger(t)}
                 className={`px-4 py-2 rounded-full text-sm transition-all ${
                   triggers.includes(t)
-                    ? 'bg-violet-600 text-white'
+                    ? 'bg-cyan-600 text-white'
                     : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                 }`}
               >

@@ -30,7 +30,7 @@ export const MoodChart = ({ checkins }: MoodChartProps) => {
     return (
       <Card className="col-span-1 md:col-span-2">
         <div className="flex items-center gap-2 mb-4">
-          <TrendingUp className="text-violet-500" size={18} />
+          <TrendingUp className="text-cyan-500" size={18} />
           <CardTitle className="mb-0">Mood Trend</CardTitle>
         </div>
         <div className="h-40 flex items-center justify-center border border-dashed border-white/10 rounded-xl bg-white/5">
@@ -45,7 +45,7 @@ export const MoodChart = ({ checkins }: MoodChartProps) => {
   return (
     <Card className="col-span-1 md:col-span-2">
       <div className="flex items-center gap-2 mb-6">
-        <TrendingUp className="text-violet-500" size={18} />
+        <TrendingUp className="text-cyan-500" size={18} />
         <CardTitle className="mb-0">Mood Trend (Last 7 Days)</CardTitle>
       </div>
       <div className="w-full h-[240px] pl-4 min-h-[240px]">
@@ -53,8 +53,8 @@ export const MoodChart = ({ checkins }: MoodChartProps) => {
           <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
-                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.3}/>
+                <stop offset="95%" stopColor="#06b6d4" stopOpacity={0}/>
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
@@ -86,11 +86,11 @@ export const MoodChart = ({ checkins }: MoodChartProps) => {
             <Area
               type="monotone"
               dataKey="score"
-              stroke="#8b5cf6"
+              stroke="#06b6d4"
               strokeWidth={3}
               fillOpacity={1}
               fill="url(#colorScore)"
-              activeDot={{ r: 6, fill: '#8b5cf6', stroke: '#fff', strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#06b6d4', stroke: '#fff', strokeWidth: 2 }}
             />
           </AreaChart>
         </ResponsiveContainer>

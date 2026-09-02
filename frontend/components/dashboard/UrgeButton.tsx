@@ -82,7 +82,7 @@ export const UrgeButton = ({ onResponse }: { onResponse?: (msg: string) => void 
                     onClick={() => setTrigger(t)}
                     className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 border ${
                       trigger === t
-                        ? 'bg-violet-600 border-violet-500 text-white shadow-lg shadow-violet-500/25'
+                        ? 'bg-cyan-600 border-cyan-500 text-white shadow-lg shadow-cyan-500/25'
                         : 'bg-zinc-800/50 border-white/5 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 hover:border-white/10'
                     }`}
                   >
@@ -103,7 +103,7 @@ export const UrgeButton = ({ onResponse }: { onResponse?: (msg: string) => void 
                     onClick={() => setMood(m)}
                     className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 border ${
                       mood === m
-                        ? 'bg-violet-600 border-violet-500 text-white shadow-lg shadow-violet-500/25'
+                        ? 'bg-cyan-600 border-cyan-500 text-white shadow-lg shadow-cyan-500/25'
                         : 'bg-zinc-800/50 border-white/5 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 hover:border-white/10'
                     }`}
                   >
@@ -118,7 +118,7 @@ export const UrgeButton = ({ onResponse }: { onResponse?: (msg: string) => void 
                 <label className="text-sm font-medium text-zinc-400 flex items-center gap-2">
                   <ShieldAlert size={16} /> Urge Intensity
                 </label>
-                <span className="text-violet-400 font-bold bg-violet-500/10 px-3 py-1 rounded-lg">
+                <span className="text-cyan-400 font-bold bg-cyan-500/10 px-3 py-1 rounded-lg">
                   {intensity}/10
                 </span>
               </div>
@@ -128,7 +128,7 @@ export const UrgeButton = ({ onResponse }: { onResponse?: (msg: string) => void 
                 max={10}
                 value={intensity}
                 onChange={(e) => setIntensity(Number(e.target.value))}
-                className="w-full accent-violet-500 h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer"
+                className="w-full accent-cyan-500 h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer"
               />
               <div className="flex justify-between text-xs text-zinc-500">
                 <span>Mild</span>
@@ -160,14 +160,14 @@ export const UrgeButton = ({ onResponse }: { onResponse?: (msg: string) => void 
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-gradient-to-br from-violet-900/40 to-fuchsia-900/20 border border-violet-500/30 rounded-2xl p-5 shadow-xl shadow-violet-500/10 relative overflow-hidden"
+              className="bg-gradient-to-br from-cyan-900/40 to-purple-900/20 border border-cyan-500/30 rounded-2xl p-5 shadow-xl shadow-cyan-500/10 relative overflow-hidden"
             >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-500 to-fuchsia-500" />
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-purple-500" />
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-violet-500/20 rounded-xl">
-                  <Sparkles size={20} className="text-violet-300" />
+                <div className="p-2 bg-cyan-500/20 rounded-xl">
+                  <Sparkles size={20} className="text-cyan-300" />
                 </div>
-                <h3 className="text-lg font-medium text-violet-100">AI Coach Advice</h3>
+                <h3 className="text-lg font-medium text-cyan-100">AI Coach Advice</h3>
               </div>
               <p className="text-zinc-300 text-sm leading-relaxed whitespace-pre-wrap">
                 {response}

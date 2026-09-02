@@ -39,9 +39,9 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">{label}</label>
+      <label className="text-xs font-medium text-foreground/60 uppercase tracking-wider">{label}</label>
       <div className="relative flex items-center">
-        <Icon size={16} className="absolute left-3.5 text-zinc-500 pointer-events-none" />
+        <Icon size={16} className="absolute left-3.5 text-foreground/40 pointer-events-none" />
         <input
           type={type}
           value={value}
@@ -49,15 +49,15 @@ function Field({
           placeholder={placeholder}
           disabled={disabled}
           className="
-            w-full bg-zinc-900/60 border border-white/10 rounded-xl
-            pl-10 pr-10 py-3 text-sm text-zinc-100 placeholder-zinc-600
-            focus:outline-none focus:ring-2 focus:ring-violet-500/40 focus:border-violet-500/40
+            w-full bg-white/5 border border-foreground/15 rounded-xl
+            pl-10 pr-10 py-3 text-sm text-foreground placeholder-foreground/40
+            focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/50
             transition-all duration-200
             disabled:opacity-50 disabled:cursor-not-allowed
           "
         />
         {rightElement && (
-          <div className="absolute right-3 text-zinc-500">{rightElement}</div>
+          <div className="absolute right-3 text-foreground/40">{rightElement}</div>
         )}
       </div>
     </div>
@@ -89,7 +89,7 @@ function PasswordField({
         <button
           type="button"
           onClick={() => setShow((s) => !s)}
-          className="hover:text-zinc-300 transition-colors"
+          className="hover:text-foreground transition-colors"
           tabIndex={-1}
         >
           {show ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -182,23 +182,23 @@ export default function SettingsPage() {
     >
       {/* Header */}
       <motion.div variants={itemVariants}>
-        <h1 className="text-3xl font-bold text-white tracking-tight">Settings</h1>
-        <p className="text-zinc-400 text-sm mt-2">
+        <h1 className="text-3xl font-bold text-foreground tracking-tight">Settings</h1>
+        <p className="text-foreground/70 text-sm mt-2">
           Manage your account information and security.
         </p>
       </motion.div>
 
       {/* ── Avatar + Name display ── */}
       <motion.div variants={itemVariants} className="glass-panel rounded-2xl p-6 flex items-center gap-5">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-500/20 shrink-0">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/30 shrink-0">
           <span className="text-2xl font-bold text-white">
             {user?.name?.charAt(0)?.toUpperCase() ?? user?.email?.charAt(0)?.toUpperCase() ?? 'U'}
           </span>
         </div>
         <div>
-          <p className="text-lg font-semibold text-white">{user?.name || 'Anonymous'}</p>
-          <p className="text-sm text-zinc-400">{user?.email}</p>
-          <p className="text-xs text-zinc-600 mt-1">
+          <p className="text-lg font-semibold text-foreground">{user?.name || 'Anonymous'}</p>
+          <p className="text-sm text-foreground/70">{user?.email}</p>
+          <p className="text-xs text-foreground/40 mt-1">
             Member since {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : '—'}
           </p>
         </div>
@@ -206,13 +206,13 @@ export default function SettingsPage() {
 
       {/* ── Profile Section ── */}
       <motion.div variants={itemVariants} className="glass-panel rounded-2xl p-6 space-y-6">
-        <div className="flex items-center gap-3 border-b border-white/5 pb-5">
-          <div className="w-9 h-9 rounded-xl bg-violet-500/15 flex items-center justify-center">
-            <User size={18} className="text-violet-400" />
+        <div className="flex items-center gap-3 border-b border-foreground/10 pb-5">
+          <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+            <User size={18} className="text-primary" />
           </div>
           <div>
-            <h2 className="text-base font-semibold text-white">Profile Information</h2>
-            <p className="text-xs text-zinc-500">Update your name and email address</p>
+            <h2 className="text-base font-semibold text-foreground">Profile Information</h2>
+            <p className="text-xs text-foreground/50">Update your name and email address</p>
           </div>
         </div>
 
@@ -240,10 +240,10 @@ export default function SettingsPage() {
               disabled={profileLoading}
               className="
                 flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium
-                bg-violet-600 hover:bg-violet-500 active:scale-95
+                bg-primary hover:bg-primary-dark active:scale-95
                 text-white transition-all duration-200
                 disabled:opacity-60 disabled:cursor-not-allowed
-                shadow-lg shadow-violet-500/20
+                shadow-lg shadow-primary/25
               "
             >
               {profileLoading ? (
@@ -260,8 +260,8 @@ export default function SettingsPage() {
       {/* ── Password Section ── */}
       <motion.div variants={itemVariants} className="glass-panel rounded-2xl p-6 space-y-6">
         <div className="flex items-center gap-3 border-b border-white/5 pb-5">
-          <div className="w-9 h-9 rounded-xl bg-fuchsia-500/15 flex items-center justify-center">
-            <Shield size={18} className="text-fuchsia-400" />
+          <div className="w-9 h-9 rounded-xl bg-purple-500/15 flex items-center justify-center">
+            <Shield size={18} className="text-purple-400" />
           </div>
           <div>
             <h2 className="text-base font-semibold text-white">Change Password</h2>
@@ -307,10 +307,10 @@ export default function SettingsPage() {
               disabled={passwordLoading}
               className="
                 flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium
-                bg-fuchsia-600 hover:bg-fuchsia-500 active:scale-95
+                bg-purple-600 hover:bg-purple-500 active:scale-95
                 text-white transition-all duration-200
                 disabled:opacity-60 disabled:cursor-not-allowed
-                shadow-lg shadow-fuchsia-500/20
+                shadow-lg shadow-purple-500/20
               "
             >
               {passwordLoading ? (

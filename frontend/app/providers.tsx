@@ -14,9 +14,9 @@ export function Providers({
         position="top-center"
         toastOptions={{
           style: {
-            background: '#18181b', // zinc-900
-            color: '#fff',
-            border: '1px solid rgba(255,255,255,0.1)',
+            background: '#18181b',
+            color: '#fafafa',
+            border: '1px solid rgba(255,255,255,0.08)',
           },
         }}
       />

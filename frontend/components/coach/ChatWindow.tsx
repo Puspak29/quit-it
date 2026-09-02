@@ -79,7 +79,7 @@ export const ChatWindow = ({
 
       {/* Header */}
       <div className="px-5 py-4 border-b border-gray-800 flex items-center gap-3">
-        <div className="w-9 h-9 rounded-full bg-violet-600/20 border border-violet-500/30
+        <div className="w-9 h-9 rounded-full bg-cyan-600/20 border border-cyan-500/30
           flex items-center justify-center text-lg">
           🧠
         </div>
@@ -156,7 +156,7 @@ export const ChatWindow = ({
       {/* Input area */}
       <div className="px-4 pb-4 pt-2 border-t border-gray-800">
         <div className="flex gap-2 items-end bg-gray-900 rounded-xl
-          border border-gray-700 focus-within:border-violet-500/50 transition-colors px-3 py-2">
+          border border-gray-700 focus-within:border-cyan-500/50 transition-colors px-3 py-2">
           <textarea
             ref={inputRef}
             value={input}
