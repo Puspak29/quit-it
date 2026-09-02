@@ -70,7 +70,7 @@ export function MessageInput({ onSend, disabled, placeholder }: MessageInputProp
                 <button
                     type="submit"
                     disabled={disabled || !draft.trim()}
-                    className="w-9 h-9 rounded-xl bg-violet-500 hover:bg-violet-400
+                    className="w-9 h-9 rounded-xl bg-cyan-500 hover:bg-cyan-400
                      disabled:opacity-30 disabled:cursor-not-allowed
                      flex items-center justify-center transition-colors shrink-0"
                     aria-label="Send message"

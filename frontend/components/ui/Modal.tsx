@@ -49,12 +49,12 @@ export const Modal = ({ open, onClose, title, children, className }: ModalProps)
             )}
           >
             {/* Drag handle — visible on mobile only */}
-            <div className="sm:hidden w-10 h-1 bg-zinc-700 rounded-full mx-auto mb-5" />
+            <div className="sm:hidden w-10 h-1 bg-foreground/20 rounded-full mx-auto mb-5" />
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-zinc-100 tracking-tight">{title}</h2>
+              <h2 className="text-xl font-semibold text-foreground tracking-tight">{title}</h2>
               <button
                 onClick={onClose}
-                className="text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/50 p-1.5 rounded-full transition-colors"
+                className="text-foreground/40 hover:text-foreground hover:bg-foreground/10 p-1.5 rounded-full transition-colors"
               >
                 <X size={20} />
               </button>

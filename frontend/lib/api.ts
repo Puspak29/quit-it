@@ -21,15 +21,8 @@ api.interceptors.request.use(
 
 // Unwrap backend envelope: { success, message, data: T } → T
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      if (typeof window !== 'undefined' && window.location.pathname !== '/sign-in') {
-        window.location.href = '/sign-in';
-      }
-    }
     return Promise.reject(error);
   }
 );

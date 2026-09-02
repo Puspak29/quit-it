@@ -48,7 +48,7 @@ export function CommunityMessageBubble({ message, isOwn, onFlag }: CommunityMess
           className={cn(
             'rounded-2xl px-4 py-2.5 text-sm leading-relaxed',
             isOwn
-              ? 'bg-violet-500/20 text-white rounded-tr-sm'
+              ? 'bg-cyan-500/20 text-white rounded-tr-sm'
               : 'bg-white/5 text-zinc-200 rounded-tl-sm',
             isFlagged && 'opacity-50 italic',
           )}

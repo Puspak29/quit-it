@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 // import { useNotification } from '@/hooks/useNotification';
 
 const NAV_ITEMS = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/checkin', label: 'Check-in', icon: CheckSquare },
   { href: '/coach', label: 'AI Coach', icon: MessageSquare },
   { href: '/insights', label: 'Insights', icon: BarChart3 },
@@ -54,8 +54,8 @@ export default function DashboardLayout({
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4 animate-pulse">
-          <Loader2 className="w-10 h-10 text-violet-500 animate-spin" />
-          <p className="text-zinc-500 text-sm tracking-widest uppercase">Initializing</p>
+          <Loader2 className="w-10 h-10 text-primary animate-spin" />
+          <p className="text-foreground/50 text-sm tracking-widest uppercase">Initializing</p>
         </div>
       </div>
     );
@@ -64,13 +64,13 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
       {/* Sidebar Navigation */}
-      <nav className="border-b md:border-b-0 md:border-r border-white/5 glass-panel md:w-64 shrink-0 z-50">
+      <nav className="border-b md:border-b-0 md:border-r border-foreground/10 glass-panel md:w-64 shrink-0 z-50">
         <div className="p-6 md:sticky md:top-0 md:h-screen flex flex-col">
           <div className="flex items-center gap-3 mb-8 px-2">
-            <div className="w-8 h-8 rounded-lg bg-linear-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
+            <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/30">
               <span className="text-white font-bold text-xl leading-none">Q</span>
             </div>
-            <span className="text-xl font-bold text-white tracking-tight">Quit-It</span>
+            <span className="text-xl font-bold text-foreground tracking-tight">Quit-It</span>
           </div>
           
           <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-4 md:pb-0 hide-scrollbar">
@@ -82,34 +82,34 @@ export default function DashboardLayout({
                   href={href}
                   className={cn(
                     "relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 whitespace-nowrap",
-                    isActive ? "text-white" : "text-zinc-400 hover:text-zinc-100 hover:bg-white/5"
+                    isActive ? "text-primary" : "text-foreground/60 hover:text-foreground hover:bg-foreground/5"
                   )}
                 >
                   {isActive && (
                     <motion.div
                       layoutId="nav-pill"
-                      className="absolute inset-0 bg-white/10 rounded-xl"
+                      className="absolute inset-0 bg-primary/10 rounded-xl"
                       transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                     />
                   )}
-                  <Icon size={18} className={cn("relative z-10", isActive && "text-violet-400")} />
+                  <Icon size={18} className={cn("relative z-10", isActive && "text-primary")} />
                   <span className="relative z-10 font-medium text-sm">{label}</span>
                 </a>
               );
             })}
           </div>
 
-          <div className="mt-auto hidden md:flex pt-8 border-t border-white/5 items-center justify-between px-2">
+          <div className="mt-auto hidden md:flex pt-8 border-t border-foreground/10 items-center justify-between px-2">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center overflow-hidden">
-                <span className="text-xs text-zinc-400">{user?.name?.charAt(0) || user?.email?.charAt(0) || 'U'}</span>
+              <div className="w-8 h-8 rounded-full bg-primary/10 border border-foreground/10 flex items-center justify-center overflow-hidden">
+                <span className="text-xs text-primary">{user?.name?.charAt(0) || user?.email?.charAt(0) || 'U'}</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-sm font-medium text-zinc-200">{user?.name || 'User'}</span>
-                <span className="text-xs text-zinc-500 truncate w-32">{user?.email}</span>
+                <span className="text-sm font-medium text-foreground">{user?.name || 'User'}</span>
+                <span className="text-xs text-foreground/50 truncate w-32">{user?.email}</span>
               </div>
             </div>
-            <button onClick={logout} className="text-zinc-400 hover:text-red-400 transition-colors p-2" title="Log out">
+            <button onClick={logout} className="text-foreground/50 hover:text-red-500 transition-colors p-2" title="Log out">
                 <LogOut size={16} />
             </button>
           </div>

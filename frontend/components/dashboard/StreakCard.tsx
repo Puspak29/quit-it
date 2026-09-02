@@ -18,13 +18,13 @@ export const StreakCard = ({ streak, addiction }: StreakCardProps) => {
     ? 'text-orange-500 bg-orange-500/10 border-orange-500/20' 
     : isMediumStreak 
       ? 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20' 
-      : 'text-violet-500 bg-violet-500/10 border-violet-500/20';
+      : 'text-cyan-500 bg-cyan-500/10 border-cyan-500/20';
 
   const glowClass = isHighStreak
     ? 'from-orange-500/20 to-transparent'
     : isMediumStreak
       ? 'from-yellow-500/20 to-transparent'
-      : 'from-violet-500/20 to-transparent';
+      : 'from-cyan-500/20 to-transparent';
 
   return (
     <Card className="col-span-1 md:col-span-2 relative overflow-hidden group">

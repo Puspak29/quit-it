@@ -57,7 +57,7 @@ export const MessageBubble = ({
         className={cn(
           'w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm',
           isUser
-            ? 'bg-violet-600 text-white'
+            ? 'bg-cyan-600 text-white'
             : 'bg-gray-800 border border-gray-700 text-base'
         )}
       >
@@ -69,7 +69,7 @@ export const MessageBubble = ({
         className={cn(
           'max-w-[75%] rounded-2xl px-4 py-3 text-sm leading-relaxed',
           isUser
-            ? 'bg-violet-600 text-white rounded-tr-sm'
+            ? 'bg-cyan-600 text-white rounded-tr-sm'
             : 'bg-gray-900 border border-gray-800 text-gray-200 rounded-tl-sm'
         )}
       >
@@ -80,7 +80,7 @@ export const MessageBubble = ({
           <p
             className={cn(
               'text-xs mt-1.5',
-              isUser ? 'text-violet-300/60' : 'text-gray-600'
+              isUser ? 'text-cyan-300/60' : 'text-gray-600'
             )}
           >
             {new Date(createdAt).toLocaleTimeString([], {
